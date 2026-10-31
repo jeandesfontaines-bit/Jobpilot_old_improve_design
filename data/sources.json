@@ -1,0 +1,74 @@
+[
+  {
+    "name": "jobs_ch",
+    "display_name": "jobs.ch",
+    "status": "actif",
+    "last_run": "2026-10-12T13:24:16.145Z",
+    "found_count": 86,
+    "new_count": 8,
+    "error_message": null
+  },
+  {
+    "name": "jobup_ch",
+    "display_name": "jobup.ch (Suisse romande)",
+    "status": "actif",
+    "last_run": "2026-10-12T13:24:35.096Z",
+    "found_count": 63,
+    "new_count": 6,
+    "error_message": null
+  },
+  {
+    "name": "indeed_ch",
+    "display_name": "Indeed Suisse",
+    "status": "inactif",
+    "last_run": "2026-10-11T07:49:40.529Z",
+    "found_count": 0,
+    "new_count": 0,
+    "error_message": "Mis en pause (protections anti-bot Cloudflare)"
+  },
+  {
+    "name": "linkedin",
+    "display_name": "LinkedIn Suisse",
+    "status": "actif",
+    "last_run": "2026-10-12T14:14:00.639Z",
+    "found_count": 20,
+    "new_count": 6,
+    "error_message": null
+  },
+  {
+    "name": "jobwinner",
+    "display_name": "Jobwinner.ch",
+    "status": "actif",
+    "last_run": "2026-10-12T13:24:46.860Z",
+    "found_count": 15,
+    "new_count": 5,
+    "error_message": null
+  },
+  {
+    "name": "jobeo",
+    "display_name": "Jobeo.ch",
+    "status": "actif",
+    "last_run": "2026-10-12T13:24:56.183Z",
+    "found_count": 12,
+    "new_count": 3,
+    "error_message": null
+  },
+  {
+    "name": "job_room",
+    "display_name": "Job-Room (Service public)",
+    "status": "partiel",
+    "last_run": "2026-10-18T23:05:17.092Z",
+    "found_count": 530,
+    "new_count": 103,
+    "error_message": "Collecte non exhaustive (max_pages_reached, 1 pages traitées)"
+  },
+  {
+    "name": "jobscout24",
+    "display_name": "JobScout24",
+    "status": "inactif",
+    "last_run": null,
+    "found_count": 0,
+    "new_count": 0,
+    "error_message": "Prévu prochainement"
+  }
+]

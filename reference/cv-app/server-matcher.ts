@@ -1,0 +1,1 @@
+Voir repo jeandesfontaines-bit/Cv, fichier src/server/matcher.ts (sha 99b28f71e47d27c19d0e64bc0c2a44952954f8a6) — evaluateJobMatch (score pondéré titre 25%, skills 30%, expérience 15%, séniorité 10%, localisation 12%, salaire 8%, exclusions strictes) et evaluateJobMatchWithAI (recommendedCvId).

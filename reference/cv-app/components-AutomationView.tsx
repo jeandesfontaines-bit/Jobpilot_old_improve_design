@@ -1,0 +1,1 @@
+Voir repo jeandesfontaines-bit/Cv, fichier src/components/AutomationView.tsx (sha 73713dc3bbed96cd053706511c845dfecccd1bca) — centre d'automatisation : tâches requires_review, résolution avec sauvegarde en banque, journal temps réel, banque de réponses pré-approuvées.

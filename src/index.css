@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --color-zinc-50: #f8f9fb;
+  --color-slate-50: #f8f9fb;
+}
+
+:root {
+  --ink: #111114;
+  --ink-2: #20201e;
+  --body: #55555c;
+  --muted: #a1a1a9;
+  --line: #e9e7e2;
+  --bg: #eeece7;
+  --panel: #1f2024;
+  --accent: #e10600;
+  --danger: #b32417;
+  --radius: 1rem;
+  --radius-sm: .5625rem;
+}
+
+body {
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  background-color: var(--bg);
+  color: var(--body);
+}
+
+.jobpilot-card {
+  background: #ffffff;
+  border-radius: var(--radius);
+  box-shadow: 0 .9375rem 2.5rem -1.5625rem rgba(36, 37, 42, 0.25);
+  touch-action: pan-y;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.card-title-wrap {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.card-title-wrap:hover h1,
+.card-title-wrap:hover .card-title-text {
+  color: #8a8b92;
+  text-decoration: line-through;
+  text-decoration-color: #c9c7c2;
+  text-decoration-thickness: 0.125rem;
+}
+
+.exclude-title-btn {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 30;
+  opacity: 0;
+  pointer-events: none;
+  height: 1.75rem;
+  padding: 0 0.75rem;
+  border-radius: 9999px;
+  background: #fdecea;
+  color: var(--danger);
+  font-size: 0.72rem;
+  font-weight: 600;
+  transform: translate(-50%, -125%) scale(0.92);
+  transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+
+.card-title-wrap:hover .exclude-title-btn {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -125%) scale(1);
+}
+
+.exclude-title-btn:hover {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.card-leaving-left {
+  transform: translateX(-120%) rotate(-4deg);
+  opacity: 0;
+}
+
+.card-leaving-right {
+  transform: translateX(120%) rotate(4deg);
+  opacity: 0;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e4e4e7;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #d4d4d8;
+}
+
+@keyframes indeterminate {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(0%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-indeterminate {
+  animation: indeterminate 1.5s infinite linear;
+  transform-origin: 0% 50%;
+}

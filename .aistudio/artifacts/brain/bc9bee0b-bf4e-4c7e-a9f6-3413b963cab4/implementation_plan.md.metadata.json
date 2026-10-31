@@ -1,0 +1,6 @@
+{
+  "summary":  "Mise à jour du plan d'implémentation intégrant la définition du quota quotidien selon le jour civil dans le fuseau Europe/Zurich (minuit heure suisse), la rétrocompatibilité des réglages existants lors de la migration du paramètre d'intervalle, et le verrouillage strict de la simulation.",
+  "updatedAt":  "2026-10-22T09:01:05.567020237Z",
+  "requestFeedback":  true,
+  "userFacing":  true
+}

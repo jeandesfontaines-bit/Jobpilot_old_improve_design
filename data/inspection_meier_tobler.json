@@ -1,0 +1,19 @@
+{
+  "inspection_date": "2026-10-22T03:57:13-07:00",
+  "offer_url": "https://www.jobup.ch/fr/emplois/detail/b7773ad4-1ba1-4565-bc30-d7779b914234/",
+  "final_form_url": "https://ohws.prospective.ch/public/v1/jobs/13658d11-a0bc-48c4-aee5-018254a1eb72/",
+  "status": "Simulation - Inspection réussie",
+  "mapped_fields": [
+    { "label": "Prénom", "name": "firstname", "value": "User.FirstName", "status": "Mapped" },
+    { "label": "Nom", "name": "lastname", "value": "User.LastName", "status": "Mapped" },
+    { "label": "E-mail", "name": "email", "value": "User.Email", "status": "Mapped" },
+    { "label": "CV", "name": "cv_upload", "value": "/path/to/local/cv.pdf", "status": "Mapped (Path Only)" }
+  ],
+  "unmapped_fields": [
+    { "label": "Téléphone", "name": "phone", "status": "Missing in Profile" },
+    { "label": "Lettre de motivation", "name": "cover_letter", "status": "Not Set" },
+    { "label": "Déclaration de confidentialité", "name": "privacy_consent", "status": "Required - Not Set" },
+    { "label": "CAPTCHA", "name": "captcha", "status": "Blocking - Ignored" },
+    { "label": "Questions complémentaires", "name": "custom_questions", "status": "Not Set" }
+  ]
+}

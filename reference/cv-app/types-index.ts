@@ -1,0 +1,1 @@
+Voir repo jeandesfontaines-bit/Cv, fichier src/types/index.ts (sha 2dc0c05e01e1aa3653b9da9df505b1a735bcc1ef) — contenu complet copié lors de la lecture ; modèle : UserProfile, CVVersion, JobPosting (recommendedCvId, matchScore, reasonsForMatch), ReusableQuestion, AutomationTask, ApplicationRecord, AppSettings.

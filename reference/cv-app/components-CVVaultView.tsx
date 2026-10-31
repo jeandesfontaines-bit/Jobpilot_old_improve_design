@@ -1,0 +1,1 @@
+Voir repo jeandesfontaines-bit/Cv, fichier src/components/CVVaultView.tsx (sha 4ecdf3d67bc73cbfea17c29089831a8d463db040) — coffre-fort de CV : import/parse, duplication, CV par défaut, audit ATS contre une offre.

@@ -1,0 +1,1 @@
+Voir repo jeandesfontaines-bit/Cv, fichier src/App.tsx (sha 109274b7ccfb1b7aaca99db4642cf351c8fa4a34) — handleQuickApply utilise job.recommendedCvId || cvs[0].id avec mode auto_apply ; handleResolveReview sauvegarde la réponse validée dans la banque ; CVVault gère les versions ; agent actif/pause ; limite quotidienne.

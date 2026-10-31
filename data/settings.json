@@ -1,0 +1,12 @@
+[
+  {
+    "scheduler_active": false,
+    "scheduler_mode": "simulation",
+    "simulation_mode": true,
+    "interval_minutes": 60,
+    "auto_scrape_interval": 0,
+    "max_candidates_per_cycle": 2,
+    "daily_submission_quota": 5,
+    "daily_application_limit": 5
+  }
+]

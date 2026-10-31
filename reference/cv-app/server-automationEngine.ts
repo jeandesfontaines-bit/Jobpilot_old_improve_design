@@ -1,0 +1,1 @@
+Voir repo jeandesfontaines-bit/Cv, fichier src/server/automationEngine.ts (sha ede5f5462ec539b28a2bcabd1d98f947671c98cd) — AutomationEngine.mapFormFields (prénom, nom, email, téléphone, localisation, CV, LinkedIn, GitHub, questions banque) et executeApplication (modes prepare/auto_apply, requires_review pour question inconnue, journaux, capture).

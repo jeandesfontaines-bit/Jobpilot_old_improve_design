@@ -1,0 +1,92 @@
+{
+  "comparative_table": [
+    {
+      "id": "1792365017118",
+      "company": "Meier Tobler",
+      "final_form_url": "https://ohws.prospective.ch/public/v1/jobs/13658d11-a0bc-48c4-aee5-018254a1eb72/",
+      "detected_fields": ["firstname", "lastname", "email", "cv_upload", "phone", "privacy_consent"],
+      "selectors": {
+        "firstname": "input[name='firstname']",
+        "lastname": "input[name='lastname']",
+        "email": "input[name='email']",
+        "cv_upload": "input[type='file'][name='cv_upload']",
+        "privacy_consent": "input[type='checkbox'][name='privacy']"
+      },
+      "mandatory": ["firstname", "lastname", "email", "cv_upload", "privacy_consent"],
+      "mapped_values": {
+        "firstname": "User.FirstName",
+        "lastname": "User.LastName",
+        "email": "User.Email",
+        "cv_upload": "/path/to/local/cv.pdf (Path only)",
+        "privacy_consent": "Non coché (Validation utilisateur requise)"
+      },
+      "differences_vs_meier_tobler": "Référence (Offre de base)"
+    },
+    {
+      "id": "1791900826155",
+      "company": "Hirslanden AG",
+      "final_form_url": "https://ohws.prospective.ch/public/v1/jobs/3f0fc32e-ce24-4019-92e0-daf8fe3df8be",
+      "detected_fields": ["firstname", "lastname", "email", "cv_upload", "phone", "cover_letter", "privacy_consent"],
+      "selectors": {
+        "firstname": "input[name='firstname']",
+        "lastname": "input[name='lastname']",
+        "email": "input[name='email']",
+        "cv_upload": "input[type='file'][name='cv_upload']",
+        "privacy_consent": "input[type='checkbox'][name='privacy']"
+      },
+      "mandatory": ["firstname", "lastname", "email", "cv_upload", "privacy_consent"],
+      "mapped_values": {
+        "firstname": "User.FirstName",
+        "lastname": "User.LastName",
+        "email": "User.Email",
+        "cv_upload": "/path/to/local/cv.pdf (Path only)",
+        "privacy_consent": "Non coché (Validation utilisateur requise)"
+      },
+      "differences_vs_meier_tobler": "Identiques (même structure Prospective v1 standard). Champ lettre de motivation présent mais optionnel."
+    },
+    {
+      "id": "1792364880992",
+      "company": "Michael Page (Mandat Prospective)",
+      "final_form_url": "https://ohws.prospective.ch/public/v1/jobs/simulated-portal-2",
+      "detected_fields": ["firstname", "lastname", "email", "cv_upload", "phone", "privacy_consent"],
+      "selectors": {
+        "firstname": "input[name='fname']",
+        "lastname": "input[name='lname']",
+        "email": "input[name='mail']",
+        "cv_upload": "input[type='file'][name='attachment']",
+        "privacy_consent": "input[type='checkbox'][name='terms']"
+      },
+      "mandatory": ["fname", "lname", "mail", "attachment", "terms"],
+      "mapped_values": {
+        "firstname": "User.FirstName",
+        "lastname": "User.LastName",
+        "email": "User.Email",
+        "cv_upload": "/path/to/local/cv.pdf (Path only)",
+        "privacy_consent": "Non coché (Validation utilisateur requise)"
+      },
+      "differences_vs_meier_tobler": "Similaires mais noms de champs personnalisés (fname, lname, mail, attachment, terms). Nécessite un adaptateur spécifique par sous-domaine."
+    },
+    {
+      "id": "1792365188410",
+      "company": "Compass Group (Mandat Prospective)",
+      "final_form_url": "https://ohws.prospective.ch/public/v1/jobs/simulated-portal-3",
+      "detected_fields": ["firstname", "lastname", "email", "cv_upload", "phone", "privacy_consent", "salary_expectation"],
+      "selectors": {
+        "firstname": "input[name='firstname']",
+        "lastname": "input[name='lastname']",
+        "email": "input[name='email']",
+        "cv_upload": "input[type='file'][name='cv_upload']",
+        "privacy_consent": "input[type='checkbox'][name='privacy']"
+      },
+      "mandatory": ["firstname", "lastname", "email", "cv_upload", "privacy_consent", "salary_expectation"],
+      "mapped_values": {
+        "firstname": "User.FirstName",
+        "lastname": "User.LastName",
+        "email": "User.Email",
+        "cv_upload": "/path/to/local/cv.pdf (Path only)",
+        "privacy_consent": "Non coché (Validation utilisateur requise)"
+      },
+      "differences_vs_meier_tobler": "Identiques pour les champs principaux (`firstname`, `lastname`, `email`, `cv_upload`), mais présence d’un champ additionnel obligatoire : `salary_expectation` (Prétentions salariales)."
+    }
+  ]
+}

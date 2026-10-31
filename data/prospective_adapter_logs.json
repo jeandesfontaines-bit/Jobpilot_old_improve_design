@@ -1,0 +1,63 @@
+[
+  {
+    "url": "https://ohws.prospective.ch/public/v1/jobs/13658d11-a0bc-48c4-aee5-018254a1eb72/",
+    "compatible": true,
+    "filledFields": [
+      {
+        "name": "firstname",
+        "value": "[User.FirstName]"
+      },
+      {
+        "name": "lastname",
+        "value": "[User.LastName]"
+      },
+      {
+        "name": "email",
+        "value": "[User.Email]"
+      },
+      {
+        "name": "cv_upload",
+        "value": "[CV Path Local Only - No Upload]"
+      }
+    ],
+    "missingFields": [
+      "phone (Téléphone)",
+      "cover_letter (Lettre de motivation)",
+      "privacy_consent (Déclaration de confidentialité)",
+      "captcha (Vérification humaine)"
+    ],
+    "unsupportedFields": [
+      "Téléphone",
+      "Lettre de motivation",
+      "Déclaration de confidentialité",
+      "CAPTCHA"
+    ],
+    "status": "Pré-remplissage possible",
+    "timestamp": "2026-10-22T11:16:39.763Z"
+  },
+  {
+    "url": "https://ohws.prospective.ch/public/v1/jobs/incompatible-job",
+    "compatible": false,
+    "reason": "Sélecteurs manquants ou non conformes: firstname, lastname, email, cv_upload",
+    "filledFields": [],
+    "missingFields": [
+      "firstname",
+      "lastname",
+      "email",
+      "cv_upload"
+    ],
+    "unsupportedFields": [],
+    "status": "Formulaire non compatible",
+    "timestamp": "2026-10-22T11:16:39.763Z"
+  },
+  {
+    "url": "https://example.com/apply",
+    "compatible": false,
+    "reason": "URL non reconnue comme Prospective CH",
+    "filledFields": [],
+    "missingFields": [],
+    "unsupportedFields": [],
+    "status": "Formulaire non compatible",
+    "timestamp": "2026-10-22T11:16:39.763Z"
+  }
+]

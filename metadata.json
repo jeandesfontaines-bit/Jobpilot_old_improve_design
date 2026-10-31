@@ -1,0 +1,6 @@
+{
+  "name": "JobPilot Suisse",
+  "description": "Assistant personnel intelligent de recherche d'emploi en Suisse. Centralise les offres, calcule le score de pertinence et gère les candidatures.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

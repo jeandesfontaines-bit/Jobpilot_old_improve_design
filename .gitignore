@@ -1,0 +1,23 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+*.db
+*.db-wal
+*.db-shm
+scraping_tasks.json
+data/scraping_tasks.json
+uploads/*
+!uploads/.gitkeep
+screenshot_*.png
+data/screenshots/
+.env*
+!.env.example
+
+# Generated / local files
+package-lock.json
+*-output.txt
+data/scraping_logs.json
+data/simulation_reports.json
