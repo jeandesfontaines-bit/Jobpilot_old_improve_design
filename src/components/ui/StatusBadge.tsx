@@ -118,6 +118,19 @@ export function normalizeStatus(raw: string): NormalizedStatus {
   return 'En attente';
 }
 
+const BADGE_BASE = 'inline-flex h-6 shrink-0 items-center gap-2 rounded-full px-2 text-caption font-medium';
+
+const STYLES: Record<NormalizedStatus, { box: string; dot: string }> = {
+  'En cours': { box: 'bg-blue-50 text-blue-800', dot: 'bg-blue-500' },
+  'Essai': { box: 'bg-purple-50 text-purple-800', dot: 'bg-purple-500' },
+  'Envoyée avec preuve': { box: 'bg-emerald-50 text-emerald-800', dot: 'bg-emerald-500' },
+  'À vérifier': { box: 'bg-amber-50 text-amber-800', dot: 'bg-amber-500' },
+  'Bloquée': { box: 'bg-red-50 text-red-800', dot: 'bg-red-500' },
+  'Refusée': { box: 'bg-black/5 text-muted', dot: 'bg-zinc-400' },
+  'Échec': { box: 'bg-red-100 text-red-900', dot: 'bg-red-600' },
+  'En attente': { box: 'bg-black/5 text-ink/70', dot: 'bg-zinc-400' },
+};
+
 export const StatusBadge: React.FC<StatusBadgeProps> = ({
   status,
   className = '',
@@ -125,83 +138,33 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
 }) => {
   const rawText = String(status || '').trim();
   const norm = normalizeStatus(rawText);
-  const isRecognized = [
-    'En cours',
-    'Essai',
-    'Envoyée avec preuve',
-    'À vérifier',
-    'Bloquée',
-    'Refusée',
-    'Échec',
-    'En attente'
-  ].includes(norm) && rawText !== '';
+  const isRecognized = norm in STYLES && rawText !== '';
 
-  // Si le statut n'est pas reconnu explicitement et n'est pas vide, on affiche son texte brut en gris neutre
+  // Statut non reconnu et non vide : texte brut en gris neutre
   if (rawText && !isRecognized) {
     if (dotOnly) {
-      return <span className={`inline-block w-2 h-2 rounded-full bg-zinc-400 ${className}`} title={rawText} />;
+      return <span className={`inline-block size-2 rounded-full bg-zinc-400 ${className}`} title={rawText} />;
     }
     return (
-      <span
-        className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border shrink-0 bg-zinc-100 text-zinc-700 border-zinc-200 ${className}`}
-      >
-        <span className="w-1.5 h-1.5 rounded-full shrink-0 bg-zinc-400" />
+      <span className={`${BADGE_BASE} bg-black/5 text-ink/70 ${className}`}>
+        <span className='size-1.5 shrink-0 rounded-full bg-zinc-400' />
         <span>{rawText}</span>
       </span>
     );
   }
 
-  let styles = 'bg-zinc-100 text-zinc-700 border-zinc-200';
-  let dotColor = 'bg-zinc-400';
-
-  switch (norm) {
-    case 'En cours':
-      styles = 'bg-blue-50 text-blue-700 border-blue-200';
-      dotColor = 'bg-blue-500';
-      break;
-    case 'Essai':
-      styles = 'bg-purple-50 text-purple-700 border-purple-200/80';
-      dotColor = 'bg-purple-500';
-      break;
-    case 'Envoyée avec preuve':
-      styles = 'bg-emerald-50 text-emerald-700 border-emerald-200';
-      dotColor = 'bg-emerald-500';
-      break;
-    case 'À vérifier':
-      styles = 'bg-amber-50 text-amber-700 border-amber-200';
-      dotColor = 'bg-amber-500';
-      break;
-    case 'Bloquée':
-      styles = 'bg-red-50 text-red-700 border-red-200';
-      dotColor = 'bg-red-500';
-      break;
-    case 'Refusée':
-      styles = 'bg-zinc-100 text-zinc-600 border-zinc-200';
-      dotColor = 'bg-zinc-400';
-      break;
-    case 'Échec':
-      styles = 'bg-red-100 text-red-800 border-red-300';
-      dotColor = 'bg-red-600';
-      break;
-    case 'En attente':
-    default:
-      styles = 'bg-zinc-100 text-zinc-700 border-zinc-200';
-      dotColor = 'bg-zinc-400';
-      break;
-  }
+  const { box, dot } = STYLES[norm];
 
   if (dotOnly) {
-    return <span className={`inline-block w-2 h-2 rounded-full ${dotColor} ${className}`} title={norm} />;
+    return <span className={`inline-block size-2 rounded-full ${dot} ${className}`} title={norm} />;
   }
 
   return (
-    <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border shrink-0 ${styles} ${className}`}
-    >
+    <span className={`${BADGE_BASE} ${box} ${className}`}>
       {norm === 'En cours' ? (
-        <RefreshCw className="w-3 h-3 animate-spin text-blue-600 shrink-0" />
+        <RefreshCw className='size-3 shrink-0 animate-spin text-blue-600' />
       ) : (
-        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotColor}`} />
+        <span className={`size-1.5 shrink-0 rounded-full ${dot}`} />
       )}
       <span>{norm}</span>
     </span>
