@@ -6,10 +6,10 @@ import { Button } from './Button';
 export type TagTone = 'indigo' | 'violet' | 'emerald' | 'rose';
 
 const TONES: Record<TagTone, string> = {
-  indigo: 'bg-indigo-50 border-indigo-200/60 text-indigo-700',
-  violet: 'bg-violet-50 border-violet-200/60 text-violet-700',
-  emerald: 'bg-emerald-50 border-emerald-200/60 text-emerald-700',
-  rose: 'bg-rose-50 border-rose-200/60 text-rose-700',
+  indigo: 'bg-indigo-50 text-indigo-800',
+  violet: 'bg-violet-50 text-violet-800',
+  emerald: 'bg-emerald-50 text-emerald-800',
+  rose: 'bg-rose-50 text-rose-800',
 };
 
 interface TagInputProps {
@@ -39,28 +39,29 @@ export const TagInput: React.FC<TagInputProps> = ({
   };
 
   return (
-    <div className="space-y-2">
-      {label && <label className="text-sm font-medium text-zinc-800 block">{label}</label>}
+    <div className='space-y-2'>
+      {label && <label className='block text-body font-medium text-ink'>{label}</label>}
       {values.length > 0 && (
-        <div className="flex flex-wrap gap-1.5">
+        <div className='flex flex-wrap gap-2'>
           {values.map((value, idx) => (
             <span
               key={`${value}-${idx}`}
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-medium ${TONES[tone]}`}
+              className={`inline-flex h-8 items-center gap-1 rounded-full pl-3 pr-1 text-caption font-medium ${TONES[tone]}`}
             >
               {value}
               <button
-                type="button"
+                type='button'
                 aria-label={`Retirer ${value}`}
                 onClick={() => onChange(values.filter((_, i) => i !== idx))}
+                className='grid size-6 place-items-center rounded-full transition-colors hover:bg-black/10'
               >
-                <X className="w-3.5 h-3.5 hover:text-rose-600 cursor-pointer" />
+                <X className='size-3.5' />
               </button>
             </span>
           ))}
         </div>
       )}
-      <div className="flex gap-2">
+      <div className='flex gap-2'>
         <Input
           value={draft}
           placeholder={placeholder}
@@ -72,7 +73,7 @@ export const TagInput: React.FC<TagInputProps> = ({
             }
           }}
         />
-        <Button type="button" onClick={add}>
+        <Button type='button' onClick={add}>
           Ajouter
         </Button>
       </div>

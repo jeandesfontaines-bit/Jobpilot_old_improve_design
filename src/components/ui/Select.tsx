@@ -4,7 +4,7 @@ export const Select = React.forwardRef<HTMLSelectElement, React.SelectHTMLAttrib
   ({ className = '', ...props }, ref) => (
     <select
       ref={ref}
-      className={`cursor-pointer bg-white text-zinc-900 hover:bg-zinc-50 border border-zinc-300 rounded-lg px-4 py-2 text-sm font-medium shadow-2xs focus:outline-none focus:ring-1 focus:ring-zinc-900 transition-all ${className}`}
+      className={`min-h-10 cursor-pointer rounded-control border border-line bg-white px-3 py-2 text-body font-medium text-ink shadow-raised transition-colors hover:bg-canvas/60 focus:border-ink focus:outline-none focus:ring-1 focus:ring-ink ${className}`}
       {...props}
     />
   )
