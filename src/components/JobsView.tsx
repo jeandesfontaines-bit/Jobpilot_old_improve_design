@@ -757,7 +757,7 @@ export const JobsView: React.FC<JobsViewProps> = ({
     <div className="flex-1 flex flex-col min-h-0 bg-white">
       {/* Recherche & Contrôles */}
       <div className="p-3 border-b border-zinc-100 space-y-2 bg-zinc-50/50">
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="inline-flex items-center p-0.5 bg-zinc-200/70 rounded-lg">
             <button
               type="button"
@@ -790,6 +790,9 @@ export const JobsView: React.FC<JobsViewProps> = ({
           </div>
 
           <div className="flex items-center gap-1.5">
+            <button type="button" onClick={() => { setDeckIndex(currentIndex); setMobileDetail(false); setShowFullReader(false); setViewMode('deck'); }} className="inline-flex h-8 shrink-0 items-center gap-1 rounded-md px-2 text-xs font-medium text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900" aria-label="Revenir à la vue Cartes">
+              <ChevronLeft aria-hidden="true" className="size-3.5" /> Cartes
+            </button>
             {/* Bouton Panier avec compteur visible */}
             <button
               type="button"
@@ -922,56 +925,39 @@ export const JobsView: React.FC<JobsViewProps> = ({
                     setMobileDetail(true);
                   }}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
+                    if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) {
                       e.preventDefault();
                       onSelectJob(job);
                       setMobileDetail(true);
                     }
                   }}
-                  className={`w-full text-left p-3.5 transition-all block relative cursor-pointer ${
+                  className={`w-full text-left px-4 py-4 transition-colors block relative cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-zinc-400 ${
                     isSelected
-                      ? 'bg-zinc-50/90 border-l-3 border-zinc-900'
+                      ? 'bg-zinc-100/70'
                       : 'hover:bg-zinc-50/50'
                   }`}
                 >
                   <div className="space-y-1.5">
-                    {/* Ligne 1 : Titre en gras (2 lignes max) & Croix « Pas intéressé » tout à droite */}
-                    <div className="flex items-start justify-between gap-2">
-                      <h3 className="text-sm font-bold text-zinc-900 line-clamp-2 leading-snug">
-                        {job.title}
-                      </h3>
-                      {!job.is_excluded && (
-                        <button
-                          type="button"
-                          onClick={(e) => handleStartExclusion(job, e)}
-                          title="Pas intéressé (exclure ce métier)"
-                          className="p-1 text-zinc-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors shrink-0 -mt-0.5 -mr-1"
-                          aria-label="Pas intéressé"
-                        >
-                          <X className="w-3.5 h-3.5" />
-                        </button>
-                      )}
-                    </div>
-
-                    {/* Ligne 2 : Employeur · Canton · Taux d'occupation · Date relative, en gris */}
-                    <div className="text-xs text-zinc-500 flex flex-wrap items-center gap-1 leading-snug">
-                      <span>{companyName}</span>
-                      <span>·</span>
-                      {job.canton ? (
-                        <span>{job.canton}</span>
-                      ) : (
-                        <span className="text-amber-800 font-medium" title="Canton non précisé dans l'annonce">
-                          Canton ?
-                        </span>
-                      )}
-                      {workload && (
-                        <>
-                          <span>·</span>
-                          <span>{workload}</span>
-                        </>
-                      )}
-                      <span>·</span>
-                      <span>{dateStr}</span>
+                    <div className="grid grid-cols-[minmax(0,1fr)_96px] items-start gap-x-2 gap-y-1">
+                      <h3 className="min-w-0 break-words text-sm font-medium leading-5 text-zinc-900 line-clamp-2">{job.title}</h3>
+                      <div className="flex shrink-0 items-center gap-2" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
+                        {!job.is_excluded && <>
+                          <button type="button" disabled={isJobAlreadySent(job)} onClick={(e) => void (isJobInCart(job.id) ? handleRemoveFromCart(job.id, e) : handleAddToCart(job.id, e))}
+                            aria-label={isJobAlreadySent(job) ? 'Candidature déjà envoyée' : isJobInCart(job.id) ? 'Retirer du panier' : 'Ajouter au panier'}
+                            aria-pressed={isJobInCart(job.id)}
+                            title={isJobAlreadySent(job) ? 'Déjà envoyée' : isJobInCart(job.id) ? 'Retirer du panier' : 'Ajouter au panier'}
+                            className={`grid size-11 shrink-0 place-items-center rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 disabled:opacity-40 ${isJobInCart(job.id) ? 'text-emerald-700 hover:bg-emerald-50' : 'text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900'}`}>
+                            {isJobInCart(job.id) || isJobAlreadySent(job) ? <Check aria-hidden="true" className="size-[18px]" /> : <Plus aria-hidden="true" className="size-[18px]" />}
+                          </button>
+                          <button type="button" onClick={(e) => handleStartExclusion(job, e)} aria-label={`Exclure le métier : ${job.title}`} title="Exclure ce métier"
+                            className="grid size-11 shrink-0 place-items-center rounded-lg text-zinc-400 transition-colors hover:bg-rose-50 hover:text-rose-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400">
+                            <X aria-hidden="true" className="size-[18px]" />
+                          </button>
+                        </>}
+                      </div>
+                      <p className="col-span-2 min-w-0 break-words text-xs leading-5 text-zinc-500">{companyName}</p>
+                      <p className="min-w-0 text-xs leading-5 text-zinc-500">{[job.canton || job.location || 'Lieu non précisé', workload].filter(Boolean).join(' · ')}</p>
+                      <span className="text-right text-xs leading-5 text-zinc-400">{dateStr}</span>
                     </div>
 
                     {/* Ligne 3 (si présent) : StatusBadge du dernier envoi & motif complet lisible */}
@@ -1006,6 +992,7 @@ export const JobsView: React.FC<JobsViewProps> = ({
                       <div
                         className="mt-1.5 p-2 bg-amber-50 border border-amber-200 rounded text-[11px] text-amber-900 flex items-center justify-between gap-2"
                         onClick={(e) => e.stopPropagation()}
+                        onKeyDown={(e) => e.stopPropagation()}
                       >
                         <span>La candidature est peut-être déjà partie. Vérifie sur le site de l'entreprise avant de renvoyer.</span>
                         <button
@@ -1021,88 +1008,12 @@ export const JobsView: React.FC<JobsViewProps> = ({
                       </div>
                     )}
 
-                    {/* Barre d'actions en bas de la carte : Postuler (rouge), Essai, Panier */}
-                    {!job.is_excluded && (
-                      <div className="pt-1 flex items-center gap-1.5 flex-wrap">
-                        {/* 1. Postuler (bouton principal rouge) */}
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setApplyingJob(job);
-                            setApplyError(null);
-                            setApplyFeedback(null);
-                          }}
-                          title="Postuler en 1 clic"
-                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors shadow-2xs"
-                        >
-                          <Send className="w-3 h-3 text-white" />
-                          <span>Postuler</span>
-                        </button>
-
-                        {/* 2. Essai (bouton secondaire discret) */}
-                        {!isJobAlreadySent(job) && (
-                          <button
-                            type="button"
-                            disabled={trialRunningJobId === job.id}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              void handleRunTrial(job);
-                            }}
-                            title="Mode essai : remplit le formulaire et téléverse le CV sans envoyer"
-                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-zinc-700 bg-zinc-100 hover:bg-zinc-200 border border-zinc-200/80 rounded-md transition-colors shadow-2xs disabled:opacity-50"
-                          >
-                            {trialRunningJobId === job.id ? (
-                              <>
-                                <RefreshCw className="w-3 h-3 text-zinc-500 animate-spin" />
-                                <span>Essai en cours...</span>
-                              </>
-                            ) : (
-                              <>
-                                <FlaskConical className="w-3 h-3 text-zinc-500" />
-                                <span>Essai</span>
-                              </>
-                            )}
-                          </button>
-                        )}
-
-                        {/* 3. Panier / Au panier / Déjà envoyée */}
-                        {isJobAlreadySent(job) ? (
-                          <span
-                            className="text-[10px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-200"
-                            title="Cette offre a déjà été envoyée"
-                          >
-                            Déjà envoyée
-                          </span>
-                        ) : isJobInCart(job.id) ? (
-                          <button
-                            type="button"
-                            onClick={(e) => void handleRemoveFromCart(job.id, e)}
-                            title="Retirer du panier"
-                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-md transition-colors shadow-2xs"
-                          >
-                            <Check className="w-3 h-3 text-emerald-600" />
-                            <span>Au panier</span>
-                          </button>
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={(e) => void handleAddToCart(job.id, e)}
-                            title="Ajouter au panier de postulation"
-                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-zinc-700 bg-white hover:bg-zinc-100 border border-zinc-200 rounded-md transition-colors shadow-2xs"
-                          >
-                            <Plus className="w-3 h-3 text-zinc-500" />
-                            <span>Panier</span>
-                          </button>
-                        )}
-                      </div>
-                    )}
-
                     {/* Formulaire d'exclusion rapide avec champ prérempli et raccourcissable */}
                     {excludingJobId === job.id && (
                       <div
                         className="mt-2.5 p-2.5 bg-amber-50/95 border border-amber-300 rounded-lg space-y-2 shadow-xs cursor-default"
                         onClick={(e) => e.stopPropagation()}
+                        onKeyDown={(e) => e.stopPropagation()}
                       >
                         <div className="flex items-center justify-between gap-1 text-[11px] font-bold text-amber-950">
                           <span>Exclure ce métier (« Ce que je ne veux pas »)</span>
@@ -1115,7 +1026,7 @@ export const JobsView: React.FC<JobsViewProps> = ({
                             <X className="w-3.5 h-3.5" />
                           </button>
                         </div>
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex flex-wrap items-center gap-2">
                           <input
                             type="text"
                             value={exclusionDraft}
@@ -1130,7 +1041,7 @@ export const JobsView: React.FC<JobsViewProps> = ({
                             }}
                             autoFocus
                             placeholder="Intitulé à exclure..."
-                            className="flex-1 px-2.5 py-1 text-xs bg-white border border-amber-300 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-500 text-zinc-900 font-medium"
+                            className="min-w-0 basis-full sm:basis-auto flex-1 px-3 py-2 text-sm bg-white border border-amber-300 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-500 text-zinc-900 font-medium"
                           />
                           <button
                             type="button"
@@ -1181,19 +1092,7 @@ export const JobsView: React.FC<JobsViewProps> = ({
                       </div>
                     )}
 
-                    {/* Source, Taux & Date */}
-                    <div className="flex items-center justify-between gap-2 pt-0.5 text-[10px] text-zinc-500">
-                      <div className="flex items-center gap-1.5 truncate">
-                        <span className="px-1.5 py-0.2 bg-zinc-100 text-zinc-600 rounded">
-                          {sourceLabel(job.source)}
-                        </span>
-                        {workload && <span>{workload}</span>}
-                      </div>
-                      <span className="text-zinc-400 shrink-0 flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {dateStr}
-                      </span>
-                    </div>
+
                   </div>
                 </div>
               );
