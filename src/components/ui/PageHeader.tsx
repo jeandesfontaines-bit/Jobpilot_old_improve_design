@@ -22,41 +22,24 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
     if (React.isValidElement(iconItem)) return iconItem;
     if (typeof iconItem === 'string' || typeof iconItem === 'number') return iconItem;
     const Comp = iconItem as React.ComponentType<{ className?: string }>;
-    return <Comp className="w-4 h-4 text-zinc-500 shrink-0" />;
+    return <Comp className='size-4 shrink-0 text-muted' />;
   };
 
   return (
     <div
-      className={`shrink-0 h-14 px-4 sm:px-6 bg-white border-b border-zinc-200/90 flex items-center justify-between gap-4 ${className}`}
+      className={`flex h-14 shrink-0 items-center justify-between gap-4 border-b border-line bg-white px-4 sm:px-6 ${className}`}
     >
-      {/* Titre à gauche */}
-      <div className="flex items-center gap-2.5 min-w-0">
+      <div className='flex min-w-0 items-center gap-3'>
         {Icon && renderIcon(Icon)}
-        <div className="min-w-0">
-          <div className="text-sm font-bold text-zinc-900 tracking-tight truncate flex items-center gap-2">
-            {title}
-          </div>
-          {description && (
-            <p className="text-[11px] text-zinc-500 truncate leading-tight mt-0.5">
-              {description}
-            </p>
-          )}
+        <div className='min-w-0'>
+          <div className='flex items-center gap-2 truncate text-body font-semibold text-ink'>{title}</div>
+          {description && <p className='truncate text-caption text-muted'>{description}</p>}
         </div>
       </div>
 
-      {/* Compteurs au centre */}
-      {counters && (
-        <div className="hidden sm:flex items-center gap-2 min-w-0">
-          {counters}
-        </div>
-      )}
+      {counters && <div className='hidden min-w-0 items-center gap-2 sm:flex'>{counters}</div>}
 
-      {/* Actions à droite */}
-      {actions && (
-        <div className="flex items-center gap-2 shrink-0">
-          {actions}
-        </div>
-      )}
+      {actions && <div className='flex shrink-0 items-center gap-2'>{actions}</div>}
     </div>
   );
 };

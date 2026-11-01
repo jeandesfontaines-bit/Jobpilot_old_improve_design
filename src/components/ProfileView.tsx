@@ -33,15 +33,7 @@ function readStoredTab(): TabId {
 
 export const ProfileView: React.FC = () => {
   const editor = useProfileAutosave();
-  const {
-    profile,
-    loading,
-    saveStatus,
-    lastSavedTime,
-    saveErrorMessage,
-    executeSave,
-    handleManualSave,
-  } = editor;
+  const { profile, loading, saveStatus, lastSavedTime, saveErrorMessage, executeSave, handleManualSave } = editor;
 
   const [tab, setTab] = useState<TabId>(readStoredTab);
 
@@ -53,7 +45,7 @@ export const ProfileView: React.FC = () => {
     }
   }, [tab]);
 
-  if (loading || !profile) return <Spinner label="Chargement du profil..." />;
+  if (loading || !profile) return <Spinner label='Chargement du profil...' />;
   const ready = { ...editor, profile };
   const excludedCount = (profile.excluded_roles || []).length;
 
@@ -64,80 +56,73 @@ export const ProfileView: React.FC = () => {
   ];
 
   return (
-    <div className="flex-1 min-w-0 min-h-0 overflow-y-auto custom-scrollbar bg-white">
-      {/* ── BARRE SUPÉRIEURE : PageHeader et Tabs ── */}
-      <div className="sticky top-0 z-10 bg-white/95 backdrop-blur border-b border-zinc-200/90">
+    <div className='custom-scrollbar min-h-0 min-w-0 flex-1 overflow-y-auto bg-white'>
+      <div className='sticky top-0 z-10 border-b border-line bg-white/95 backdrop-blur'>
         <PageHeader
-          title="Mon profil"
+          title='Mon profil'
           icon={User}
-          className="border-b-0"
+          className='border-b-0'
           actions={
-            <div className="flex items-center gap-3">
+            <>
               <SaveFeedback
                 status={saveStatus === 'saved' && !lastSavedTime ? 'idle' : saveStatus}
                 savedAt={lastSavedTime}
                 error={saveErrorMessage}
                 onRetry={executeSave}
               />
-              <Button size="sm" onClick={handleManualSave} className="inline-flex items-center gap-1.5 font-semibold">
-                <Save className="w-3.5 h-3.5" />
+              <Button variant='primary' size='sm' onClick={handleManualSave}>
+                <Save className='size-4' />
                 <span>Enregistrer</span>
               </Button>
-            </div>
+            </>
           }
         />
-
-        <div className="px-4 sm:px-6">
-          <Tabs
-            items={tabs}
-            activeId={tab}
-            onChange={(id) => setTab(id as TabId)}
-            className="border-b-0"
-          />
+        <div className='px-4 sm:px-6'>
+          <Tabs items={tabs} activeId={tab} onChange={(id) => setTab(id as TabId)} className='border-b-0' />
         </div>
       </div>
 
-      <div className="w-full px-4 sm:px-8 py-6 space-y-6">
-        <CardStyleContext.Provider value="section">
+      <div className='w-full max-w-3xl space-y-8 px-4 py-8 sm:px-6'>
+        <CardStyleContext.Provider value='section'>
           {tab === 'infos' && (
-            <div className="space-y-6">
+            <>
               {profile.cv_filename && (
-                <p className="flex items-center gap-2 text-xs text-zinc-600">
-                  <FileCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                <p className='flex items-center gap-3 rounded-control bg-canvas/50 px-4 py-3 text-body text-body'>
+                  <FileCheck className='size-4 shrink-0 text-emerald-600' />
                   <span>
-                    CV de base : <strong className="font-semibold text-zinc-900">{profile.cv_filename}</strong> — tes fichiers PDF se gèrent dans l’onglet « Mes CV ».
+                    CV de base : <strong className='font-medium text-ink'>{profile.cv_filename}</strong>. Tes fichiers PDF se gèrent dans « Mes CV ».
                   </span>
                 </p>
               )}
 
               <PersonalInfoCard {...ready} />
 
-              <CollapsibleBlock title="Expériences professionnelles" count={profile.experiences.length} hint="cliquer pour ouvrir">
+              <CollapsibleBlock title='Expériences professionnelles' count={profile.experiences.length} hint='cliquer pour ouvrir'>
                 <ExperiencesCard {...ready} />
               </CollapsibleBlock>
 
-              <CollapsibleBlock title="Formations et diplômes" count={profile.formations.length} hint="cliquer pour ouvrir">
+              <CollapsibleBlock title='Formations et diplômes' count={profile.formations.length} hint='cliquer pour ouvrir'>
                 <FormationsCard {...ready} />
               </CollapsibleBlock>
 
               <ProfileFromTextCard {...ready} />
 
               <PrivacyConsentCard {...ready} />
-            </div>
+            </>
           )}
 
           {tab === 'criteres' && (
-            <div className="space-y-6">
+            <>
               <SearchCriteriaCard {...ready} />
               <AdvancedOptionsCard {...ready} />
-            </div>
+            </>
           )}
 
           {tab === 'exclusions' && (
-            <div className="space-y-6">
+            <>
               <ExcludedRolesCard {...ready} />
               <NegativeKeywordsCard {...ready} />
-            </div>
+            </>
           )}
         </CardStyleContext.Provider>
       </div>
