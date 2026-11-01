@@ -1278,19 +1278,19 @@ export const JobsView: React.FC<JobsViewProps> = ({
       {viewMode === 'deck' ? (
         <div className="flex-1 min-h-0 min-w-0 flex flex-col overflow-y-auto custom-scrollbar bg-[#eeece7] p-4 sm:p-6 lg:p-8">
           {/* Barre de contexte supérieure */}
-          <div className="w-full max-w-[28.5rem] mx-auto mb-4 sm:mb-6 flex items-center justify-between gap-1.5 text-xs text-[#a1a1a9] px-1 select-none">
+          <div className="w-full max-w-[28.5rem] mx-auto mb-4 sm:mb-6 flex flex-wrap items-center justify-between gap-2 text-xs text-[#a1a1a9] px-1 select-none">
             {/* Gauche : 1 / 163 + flèches */}
-            <div className="flex items-center gap-1 shrink-0">
+            <div className="flex items-center gap-1.5 shrink-0">
               <span className="font-semibold text-[#111114]">
                 {filteredJobs.length > 0 ? `${validDeckIndex + 1} / ${filteredJobs.length}` : '0 / 0'}
               </span>
               {filteredJobs.length > 1 && (
-                <div className="inline-flex items-center">
+                <div className="inline-flex items-center gap-0.5">
                   <button
                     type="button"
                     onClick={() => setDeckIndex((prev) => Math.max(0, prev - 1))}
                     disabled={validDeckIndex <= 0}
-                    className="p-0.5 rounded hover:bg-black/5 disabled:opacity-30 disabled:pointer-events-none text-zinc-700 transition-colors cursor-pointer"
+                    className="p-1 rounded hover:bg-black/5 disabled:opacity-30 disabled:pointer-events-none text-zinc-700 transition-colors cursor-pointer"
                     title="Précédente (Flèche gauche)"
                   >
                     <ChevronLeft className="w-3.5 h-3.5" />
@@ -1299,7 +1299,7 @@ export const JobsView: React.FC<JobsViewProps> = ({
                     type="button"
                     onClick={() => setDeckIndex((prev) => Math.min(filteredJobs.length - 1, prev + 1))}
                     disabled={validDeckIndex >= filteredJobs.length - 1}
-                    className="p-0.5 rounded hover:bg-black/5 disabled:opacity-30 disabled:pointer-events-none text-zinc-700 transition-colors cursor-pointer"
+                    className="p-1 rounded hover:bg-black/5 disabled:opacity-30 disabled:pointer-events-none text-zinc-700 transition-colors cursor-pointer"
                     title="Suivante (Flèche droite)"
                   >
                     <ChevronRight className="w-3.5 h-3.5" />
@@ -1313,7 +1313,7 @@ export const JobsView: React.FC<JobsViewProps> = ({
               <button
                 type="button"
                 onClick={() => onStatusFilterChange?.('retained')}
-                className={`px-2 py-1 rounded-md transition-all cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
                   statusFilter === 'retained'
                     ? 'bg-white text-zinc-950 shadow-2xs font-bold'
                     : 'text-zinc-600 hover:text-zinc-950'
@@ -1324,7 +1324,7 @@ export const JobsView: React.FC<JobsViewProps> = ({
               <button
                 type="button"
                 onClick={() => onStatusFilterChange?.('excluded')}
-                className={`px-2 py-1 rounded-md transition-all cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
                   statusFilter === 'excluded'
                     ? 'bg-white text-rose-950 shadow-2xs font-bold'
                     : 'text-zinc-600 hover:text-rose-900'
@@ -1356,7 +1356,6 @@ export const JobsView: React.FC<JobsViewProps> = ({
               </div>
             </div>
           </div>
-
 
           {/* Central Deck Stage */}
           <div className="w-full max-w-[28.5rem] mx-auto my-auto flex flex-col justify-center">
@@ -1459,8 +1458,12 @@ export const JobsView: React.FC<JobsViewProps> = ({
                     </div>
                   )}
 
-                  {/* Meta : Entreprise · Lieu · Taux · [Salaire] */}
+                  {/* Meta : Source · Âge · Entreprise · Lieu · Taux · [Salaire] */}
                   <p className="text-xs sm:text-[13px] font-medium text-[#111114] mb-5 flex flex-wrap items-center gap-1.5 leading-snug">
+                    <span className="text-[#71717a] font-normal">{sourceLabel(currentDeckJob.source)}</span>
+                    <span className="text-[#a1a1a9]">·</span>
+                    <span className="text-[#71717a] font-normal">{relativeDate(currentDeckJob.published_at) || "aujourd'hui"}</span>
+                    <span className="text-[#a1a1a9]">·</span>
                     <span className="font-semibold text-zinc-900">{employerLabel(currentDeckJob)}</span>
                     <span className="text-[#a1a1a9]">·</span>
                     <span>
