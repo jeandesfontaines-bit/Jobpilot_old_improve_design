@@ -6,7 +6,7 @@ const VARIANTS: Record<ButtonVariant, string> = {
   primary: 'bg-ink text-white hover:bg-ink/90 border border-ink',
   accent: 'bg-accent text-white hover:bg-accent-hover border border-accent',
   secondary: 'bg-white text-ink hover:bg-canvas/60 border border-line shadow-raised',
-  ghost: 'bg-transparent text-body hover:bg-black/5 hover:text-ink border border-transparent',
+  ghost: 'bg-transparent text-ink/70 hover:bg-black/5 hover:text-ink border border-transparent',
   danger: 'bg-white text-accent hover:bg-accent/5 border border-line',
 };
 
