@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Ban, Briefcase, ChevronDown, Compass, FileText, GraduationCap, Plus, RefreshCw, Search, Tag,
+  Ban, Briefcase, ChevronDown, Compass, FileCheck, FileText, GraduationCap, Plus, RefreshCw, Search, Tag,
   Upload, User, X, Edit2, Check, Trash2, ShieldCheck,
 } from 'lucide-react';
 import { Alert, Button, Card, CardHeader, Field, Input, Select, TagInput, Textarea, Collapsible, Chip } from '../ui';
@@ -15,7 +15,7 @@ type Editor = ReturnType<typeof useProfileAutosave> & { profile: UserProfile };
 const SUBCARD = 'space-y-4 rounded-control border border-line bg-black/[0.02] p-4';
 const CAPTION = 'text-caption text-muted';
 
-// ── Bloc repliable (utilise le composant UI standard) ─────────────────────────────
+// ── Bloc repliable : le style unique de toutes les sections du profil ──────────────
 export const CollapsibleBlock = Collapsible;
 
 export const CvImportCard: React.FC<Pick<Editor, 'cvPasteText' | 'setCvPasteText' | 'analyzing' | 'cvSuccess' | 'cvError' | 'handleAnalyzeCv' | 'profile' | 'setProfile'>> = ({
@@ -99,25 +99,30 @@ export const CvImportCard: React.FC<Pick<Editor, 'cvPasteText' | 'setCvPasteText
 export const ProfileFromTextCard: React.FC<Pick<Editor, 'cvPasteText' | 'setCvPasteText' | 'analyzing' | 'cvSuccess' | 'cvError' | 'handleAnalyzeCv'>> = ({
   cvPasteText, setCvPasteText, analyzing, cvSuccess, cvError, handleAnalyzeCv,
 }) => (
-  <CollapsibleBlock title='Remplir mon profil depuis le texte d’un CV' hint='copier-coller'>
-    <div className='space-y-4'>
-      <p className={CAPTION}>
-        Colle le texte de ton CV : l’app pré-remplit tes expériences, formations et compétences. Cette action peut remplacer ce qui est déjà saisi. Tes fichiers PDF se gèrent dans l’onglet « Mes CV ».
-      </p>
-      <Textarea rows={5} className='font-mono text-caption' value={cvPasteText} onChange={(e) => setCvPasteText(e.target.value)} placeholder='Colle ici le contenu de ton CV...' />
-      <Button onClick={handleAnalyzeCv} disabled={analyzing || !cvPasteText.trim()} size='sm'>
-        {analyzing ? <RefreshCw className='size-4 animate-spin' /> : <Upload className='size-4' />}
-        <span>{analyzing ? 'Analyse en cours...' : 'Analyser et remplir mon profil'}</span>
-      </Button>
-      {cvSuccess && <Alert tone='success'>{cvSuccess}</Alert>}
-      {cvError && <Alert tone='error'>{cvError}</Alert>}
-    </div>
+  <CollapsibleBlock title='Remplir mon profil depuis le texte d’un CV' icon={<Upload />} hint='copier-coller'>
+    <p className={CAPTION}>
+      Colle le texte de ton CV : l’app pré-remplit tes expériences, formations et compétences. Cette action peut remplacer ce qui est déjà saisi. Tes fichiers PDF se gèrent dans l’onglet « Mes CV ».
+    </p>
+    <Textarea rows={5} className='font-mono text-caption' value={cvPasteText} onChange={(e) => setCvPasteText(e.target.value)} placeholder='Colle ici le contenu de ton CV...' />
+    <Button onClick={handleAnalyzeCv} disabled={analyzing || !cvPasteText.trim()} size='sm'>
+      {analyzing ? <RefreshCw className='size-4 animate-spin' /> : <Upload className='size-4' />}
+      <span>{analyzing ? 'Analyse en cours...' : 'Analyser et remplir mon profil'}</span>
+    </Button>
+    {cvSuccess && <Alert tone='success'>{cvSuccess}</Alert>}
+    {cvError && <Alert tone='error'>{cvError}</Alert>}
   </CollapsibleBlock>
 );
 
 export const PersonalInfoCard: React.FC<Pick<Editor, 'profile' | 'setProfile'>> = ({ profile, setProfile }) => (
-  <Card>
-    <CardHeader title='Informations personnelles et coordonnées' icon={<User />} />
+  <CollapsibleBlock title='Informations personnelles et coordonnées' icon={<User />} defaultOpen>
+    {profile.cv_filename && (
+      <p className='flex items-center gap-2 text-caption text-muted'>
+        <FileCheck className='size-4 shrink-0 text-emerald-600' />
+        <span>
+          CV de base : <strong className='font-medium text-ink'>{profile.cv_filename}</strong> · Tes fichiers PDF se gèrent dans « Mes CV ».
+        </span>
+      </p>
+    )}
     <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
       <Field label='Prénom'><Input value={profile.first_name || ''} onChange={(e) => setProfile({ ...profile, first_name: e.target.value })} /></Field>
       <Field label='Nom'><Input value={profile.last_name || ''} onChange={(e) => setProfile({ ...profile, last_name: e.target.value })} /></Field>
@@ -141,17 +146,16 @@ export const PersonalInfoCard: React.FC<Pick<Editor, 'profile' | 'setProfile'>> 
           <option value='Hors UE/AELE (nécessite visa)'>Hors UE/AELE (nécessite visa)</option>
         </Select>
       </Field>
-      <Field label='Langues'><Input value={profile.languages || ''} onChange={(e) => setProfile({ ...profile, languages: e.target.value })} /></Field>
-      <Field label='Diplômes'><Input value={profile.diplomas || ''} onChange={(e) => setProfile({ ...profile, diplomas: e.target.value })} /></Field>
+      <Field label='Langues' className='sm:col-span-2'><Input value={profile.languages || ''} onChange={(e) => setProfile({ ...profile, languages: e.target.value })} /></Field>
+      <Field label='Diplômes' className='sm:col-span-2'><Input value={profile.diplomas || ''} onChange={(e) => setProfile({ ...profile, diplomas: e.target.value })} /></Field>
     </div>
-  </Card>
+  </CollapsibleBlock>
 );
 
 export const ExperiencesCard: React.FC<Pick<Editor, 'profile' | 'updateExperience' | 'addExperience' | 'removeExperience'>> = ({
   profile, updateExperience, addExperience, removeExperience,
 }) => (
-  <Card>
-    <CardHeader title={`Expériences professionnelles (${profile.experiences.length})`} icon={<Briefcase />} right={<Button size='sm' onClick={addExperience}><Plus className='size-4' /><span>Ajouter</span></Button>} />
+  <CollapsibleBlock title='Expériences professionnelles' icon={<Briefcase />} count={profile.experiences.length}>
     {profile.experiences.map((exp, idx) => (
       <div key={`exp-${idx}-${exp.company || ''}`} className={SUBCARD}>
         <div className='flex items-center justify-between gap-4'>
@@ -173,14 +177,13 @@ export const ExperiencesCard: React.FC<Pick<Editor, 'profile' | 'updateExperienc
       </div>
     ))}
     <Button className='w-full' onClick={addExperience}><Plus className='size-4' /><span>Ajouter une expérience</span></Button>
-  </Card>
+  </CollapsibleBlock>
 );
 
 export const FormationsCard: React.FC<Pick<Editor, 'profile' | 'updateFormation' | 'addFormation' | 'removeFormation'>> = ({
   profile, updateFormation, addFormation, removeFormation,
 }) => (
-  <Card>
-    <CardHeader title={`Formations et diplômes (${profile.formations.length})`} icon={<GraduationCap />} right={<Button size='sm' onClick={addFormation}><Plus className='size-4' /><span>Ajouter</span></Button>} />
+  <CollapsibleBlock title='Formations et diplômes' icon={<GraduationCap />} count={profile.formations.length}>
     {profile.formations.map((form, idx) => (
       <div key={`form-${idx}-${form.diploma || ''}`} className={SUBCARD}>
         <div className='flex items-center justify-between gap-4'>
@@ -199,7 +202,7 @@ export const FormationsCard: React.FC<Pick<Editor, 'profile' | 'updateFormation'
       </div>
     ))}
     <Button className='w-full' onClick={addFormation}><Plus className='size-4' /><span>Ajouter une formation</span></Button>
-  </Card>
+  </CollapsibleBlock>
 );
 
 const SWISS_CANTONS = [
@@ -220,8 +223,7 @@ export const SearchCriteriaCard: React.FC<Pick<Editor, 'profile' | 'setProfile'>
   };
 
   return (
-    <Card>
-      <CardHeader title='Critères de recherche' icon={<Compass />} />
+    <CollapsibleBlock title='Critères de recherche' icon={<Compass />} defaultOpen>
       <p className='text-body text-ink/70'>
         Ces critères servent à garder ou écarter les offres. Un champ vide veut dire « aucune limite ».
       </p>
@@ -270,30 +272,28 @@ export const SearchCriteriaCard: React.FC<Pick<Editor, 'profile' | 'setProfile'>
       </label>
 
       <TagInput label='Postes ciblés' tone='indigo' values={profile.wanted_roles || []} onChange={(wanted_roles) => setProfile({ ...profile, wanted_roles })} />
-    </Card>
+    </CollapsibleBlock>
   );
 };
 
 export const AdvancedOptionsCard: React.FC<Pick<Editor, 'profile' | 'setProfile'>> = ({ profile, setProfile }) => (
-  <CollapsibleBlock title='Options avancées' hint='compétences, mots-clés positifs, pertinence'>
-    <div className='space-y-6'>
-      <p className={CAPTION}>
-        Utile surtout pour adapter ton CV à chaque offre. Tu peux ignorer ce bloc.
-      </p>
-      <TagInput label='Compétences' tone='emerald' values={profile.skills || []} onChange={(skills) => setProfile({ ...profile, skills })} />
-      <TagInput label='Mots-clés positifs' tone='emerald' values={profile.positive_keywords || []} onChange={(positive_keywords) => setProfile({ ...profile, positive_keywords })} />
-      <label className='flex cursor-pointer items-center gap-3'>
-        <input
-          type='checkbox'
-          checked={Boolean(profile.enable_relevance_matching)}
-          onChange={(e) => setProfile({ ...profile, enable_relevance_matching: e.target.checked })}
-          className='size-4 rounded accent-ink'
-        />
-        <span className='text-body font-medium text-ink'>
-          Filtrage strict par pertinence métier (matching avec les compétences et postes du profil)
-        </span>
-      </label>
-    </div>
+  <CollapsibleBlock title='Options avancées' icon={<Tag />} hint='compétences, mots-clés positifs, pertinence'>
+    <p className={CAPTION}>
+      Utile surtout pour adapter ton CV à chaque offre. Tu peux ignorer ce bloc.
+    </p>
+    <TagInput label='Compétences' tone='emerald' values={profile.skills || []} onChange={(skills) => setProfile({ ...profile, skills })} />
+    <TagInput label='Mots-clés positifs' tone='emerald' values={profile.positive_keywords || []} onChange={(positive_keywords) => setProfile({ ...profile, positive_keywords })} />
+    <label className='flex cursor-pointer items-center gap-3'>
+      <input
+        type='checkbox'
+        checked={Boolean(profile.enable_relevance_matching)}
+        onChange={(e) => setProfile({ ...profile, enable_relevance_matching: e.target.checked })}
+        className='size-4 rounded accent-ink'
+      />
+      <span className='text-body font-medium text-ink'>
+        Filtrage strict par pertinence métier (matching avec les compétences et postes du profil)
+      </span>
+    </label>
   </CollapsibleBlock>
 );
 
@@ -360,12 +360,7 @@ export const ExcludedRolesCard: React.FC<Pick<Editor, 'profile' | 'setProfile'>>
   const visible = query ? indexed.filter((item) => item.role.toLowerCase().includes(query)) : indexed;
 
   return (
-    <Card>
-      <CardHeader
-        title='Ce que je ne veux pas — titres d’offres'
-        icon={<Ban />}
-        right={<span className={CAPTION}>{roles.length} règle{roles.length > 1 ? 's' : ''}</span>}
-      />
+    <CollapsibleBlock title='Ce que je ne veux pas — titres d’offres' icon={<Ban />} count={roles.length} defaultOpen>
       <p className='text-body text-ink/70'>
         Une offre dont le <strong className='font-medium text-ink'>titre</strong> contient tous les mots d’une règle est masquée. La description n’est jamais lue. Exemple : « vendeur boulangerie ».
       </p>
@@ -456,18 +451,16 @@ export const ExcludedRolesCard: React.FC<Pick<Editor, 'profile' | 'setProfile'>>
           </div>
         </div>
       )}
-    </Card>
+    </CollapsibleBlock>
   );
 };
 
 export const NegativeKeywordsCard: React.FC<Pick<Editor, 'profile' | 'setProfile'>> = ({ profile, setProfile }) => (
-  <CollapsibleBlock title='Mots interdits (titre et description)' count={(profile.negative_keywords || []).length} hint='avancé'>
-    <div className='space-y-4'>
-      <p className={CAPTION}>
-        Contrairement aux règles ci-dessus, ces mots sont cherchés dans le titre ET dans la description de l’offre. À utiliser avec précaution.
-      </p>
-      <TagInput label='Mots-clés exclus' tone='rose' values={profile.negative_keywords || []} onChange={(negative_keywords) => setProfile({ ...profile, negative_keywords })} />
-    </div>
+  <CollapsibleBlock title='Mots interdits (titre et description)' icon={<Tag />} count={(profile.negative_keywords || []).length} hint='avancé'>
+    <p className={CAPTION}>
+      Contrairement aux règles ci-dessus, ces mots sont cherchés dans le titre ET dans la description de l’offre. À utiliser avec précaution.
+    </p>
+    <TagInput label='Mots-clés exclus' tone='rose' values={profile.negative_keywords || []} onChange={(negative_keywords) => setProfile({ ...profile, negative_keywords })} />
   </CollapsibleBlock>
 );
 
@@ -495,49 +488,46 @@ export const PrivacyConsentCard: React.FC<Pick<Editor, 'profile' | 'setProfile'>
   };
 
   return (
-    <Card>
-      <CardHeader title='Autorisation et dépôt des données (RGPD / Suisse)' icon={<ShieldCheck className='size-4 text-emerald-600' />} />
-      <div className='space-y-4'>
-        <label className='flex cursor-pointer items-start gap-3 rounded-control border border-line bg-black/[0.02] p-4 transition-colors hover:bg-black/[0.04]'>
-          <input
-            type='checkbox'
-            checked={Boolean(profile.privacy_consent)}
-            onChange={(e) => handleToggle(e.target.checked)}
-            className='mt-1 size-4 rounded accent-emerald-600'
-          />
-          <div className='space-y-1'>
-            <span className='block text-body font-medium text-ink'>
-              « Autoriser le dépôt de mes données et de mon CV aux employeurs via les formulaires de candidature »
-            </span>
-            <p className={CAPTION}>
-              En cochant cette case, vous accordez l’autorisation explicite à l’agent d’automatisation JobPilot de cocher la déclaration de confidentialité et de téléverser votre CV et vos données personnelles sur les portails de recrutement externes (Prospective, Jobup, etc.).
-            </p>
-          </div>
-        </label>
+    <CollapsibleBlock title='Autorisation et dépôt des données (RGPD / Suisse)' icon={<ShieldCheck />} defaultOpen>
+      <label className='flex cursor-pointer items-start gap-3 rounded-control border border-line bg-black/[0.02] p-4 transition-colors hover:bg-black/[0.04]'>
+        <input
+          type='checkbox'
+          checked={Boolean(profile.privacy_consent)}
+          onChange={(e) => handleToggle(e.target.checked)}
+          className='mt-1 size-4 rounded accent-emerald-600'
+        />
+        <div className='space-y-1'>
+          <span className='block text-body font-medium text-ink'>
+            « Autoriser le dépôt de mes données et de mon CV aux employeurs via les formulaires de candidature »
+          </span>
+          <p className={CAPTION}>
+            En cochant cette case, vous accordez l’autorisation explicite à l’agent d’automatisation JobPilot de cocher la déclaration de confidentialité et de téléverser votre CV et vos données personnelles sur les portails de recrutement externes (Prospective, Jobup, etc.).
+          </p>
+        </div>
+      </label>
 
-        {profile.privacy_consent && (
-          <div className='space-y-1 rounded-control bg-emerald-50 p-4 text-caption text-emerald-900'>
-            <div className='flex items-center gap-2 font-medium'>
-              <Check className='size-4 text-emerald-600' />
-              <span>Autorisation active</span>
-            </div>
-            {profile.privacy_consent_date && (
-              <div>Date d’autorisation : {new Date(profile.privacy_consent_date).toLocaleString('fr-CH')}</div>
-            )}
+      {profile.privacy_consent && (
+        <div className='space-y-1 rounded-control bg-emerald-50 p-4 text-caption text-emerald-900'>
+          <div className='flex items-center gap-2 font-medium'>
+            <Check className='size-4 text-emerald-600' />
+            <span>Autorisation active</span>
           </div>
-        )}
+          {profile.privacy_consent_date && (
+            <div>Date d’autorisation : {new Date(profile.privacy_consent_date).toLocaleString('fr-CH')}</div>
+          )}
+        </div>
+      )}
 
-        {profile.privacy_consent_log && profile.privacy_consent_log.length > 0 && (
-          <div className='space-y-2 border-t border-line pt-4'>
-            <span className='block text-caption font-medium text-ink/70'>Journal des autorisations</span>
-            <div className='max-h-36 space-y-1 overflow-y-auto rounded-control bg-ink p-4 font-mono text-caption text-white/90'>
-              {profile.privacy_consent_log.map((log, idx) => (
-                <div key={`log-${idx}-${log}`} className='opacity-90'>{log}</div>
-              ))}
-            </div>
+      {profile.privacy_consent_log && profile.privacy_consent_log.length > 0 && (
+        <div className='space-y-2 border-t border-line pt-4'>
+          <span className='block text-caption font-medium text-ink/70'>Journal des autorisations</span>
+          <div className='max-h-36 space-y-1 overflow-y-auto rounded-control bg-ink p-4 font-mono text-caption text-white/90'>
+            {profile.privacy_consent_log.map((log, idx) => (
+              <div key={`log-${idx}-${log}`} className='opacity-90'>{log}</div>
+            ))}
           </div>
-        )}
-      </div>
-    </Card>
+        </div>
+      )}
+    </CollapsibleBlock>
   );
 };

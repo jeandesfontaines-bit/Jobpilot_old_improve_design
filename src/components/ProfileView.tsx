@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Save, FileCheck, User } from 'lucide-react';
+import { Save, User } from 'lucide-react';
 import { Button, Spinner, PageHeader, Tabs } from './ui';
-import { CardStyleContext } from './ui/Card';
 import { SaveFeedback } from './ui/SaveFeedback';
 import { useProfileAutosave } from './profile/profileState';
 import {
   AdvancedOptionsCard,
-  CollapsibleBlock,
   ExcludedRolesCard,
   ExperiencesCard,
   FormationsCard,
@@ -77,73 +75,35 @@ export const ProfileView: React.FC = () => {
             </>
           }
         />
-        <div className='px-4 sm:px-6 lg:hidden'>
+        <div className='px-4 sm:px-6'>
           <Tabs items={tabs} activeId={tab} onChange={(id) => setTab(id as TabId)} className='border-b-0' />
         </div>
       </div>
 
-      <div className='flex w-full max-w-5xl gap-12 px-4 py-8 sm:px-6'>
-        <nav aria-label='Sections du profil' className='sticky top-24 hidden h-fit w-48 shrink-0 space-y-1 lg:block'>
-          {tabs.map((item) => (
-            <button
-              key={item.id}
-              type='button'
-              onClick={() => setTab(item.id)}
-              aria-current={tab === item.id ? 'page' : undefined}
-              className={`flex h-10 w-full items-center justify-between gap-2 rounded-control px-3 text-left text-body transition-colors ${
-                tab === item.id ? 'bg-black/5 font-medium text-ink' : 'text-muted hover:bg-black/[0.03] hover:text-ink'
-              }`}
-            >
-              <span className='truncate'>{item.label}</span>
-              {typeof item.count === 'number' && item.count > 0 && <span className='text-caption tabular-nums'>{item.count}</span>}
-            </button>
-          ))}
-        </nav>
+      <div className='w-full max-w-4xl space-y-4 px-4 py-8 sm:px-6'>
+        {tab === 'infos' && (
+          <>
+            <PersonalInfoCard {...ready} />
+            <ExperiencesCard {...ready} />
+            <FormationsCard {...ready} />
+            <ProfileFromTextCard {...ready} />
+            <PrivacyConsentCard {...ready} />
+          </>
+        )}
 
-        <div className='min-w-0 max-w-3xl flex-1 space-y-8'>
-          <CardStyleContext.Provider value='section'>
-            {tab === 'infos' && (
-              <>
-                {profile.cv_filename && (
-                  <p className='flex items-center gap-3 rounded-control bg-canvas/50 px-4 py-3 text-body text-ink/70'>
-                    <FileCheck className='size-4 shrink-0 text-emerald-600' />
-                    <span>
-                      CV de base : <strong className='font-medium text-ink'>{profile.cv_filename}</strong>. Tes fichiers PDF se gèrent dans « Mes CV ».
-                    </span>
-                  </p>
-                )}
+        {tab === 'criteres' && (
+          <>
+            <SearchCriteriaCard {...ready} />
+            <AdvancedOptionsCard {...ready} />
+          </>
+        )}
 
-                <PersonalInfoCard {...ready} />
-
-                <CollapsibleBlock title='Expériences professionnelles' count={profile.experiences.length} hint='cliquer pour ouvrir'>
-                  <ExperiencesCard {...ready} />
-                </CollapsibleBlock>
-
-                <CollapsibleBlock title='Formations et diplômes' count={profile.formations.length} hint='cliquer pour ouvrir'>
-                  <FormationsCard {...ready} />
-                </CollapsibleBlock>
-
-                <ProfileFromTextCard {...ready} />
-
-                <PrivacyConsentCard {...ready} />
-              </>
-            )}
-
-            {tab === 'criteres' && (
-              <>
-                <SearchCriteriaCard {...ready} />
-                <AdvancedOptionsCard {...ready} />
-              </>
-            )}
-
-            {tab === 'exclusions' && (
-              <>
-                <ExcludedRolesCard {...ready} />
-                <NegativeKeywordsCard {...ready} />
-              </>
-            )}
-          </CardStyleContext.Provider>
-        </div>
+        {tab === 'exclusions' && (
+          <>
+            <ExcludedRolesCard {...ready} />
+            <NegativeKeywordsCard {...ready} />
+          </>
+        )}
       </div>
     </div>
   );
