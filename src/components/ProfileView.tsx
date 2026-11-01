@@ -77,54 +77,73 @@ export const ProfileView: React.FC = () => {
             </>
           }
         />
-        <div className='px-4 sm:px-6'>
+        <div className='px-4 sm:px-6 lg:hidden'>
           <Tabs items={tabs} activeId={tab} onChange={(id) => setTab(id as TabId)} className='border-b-0' />
         </div>
       </div>
 
-      <div className='w-full max-w-3xl space-y-8 px-4 py-8 sm:px-6'>
-        <CardStyleContext.Provider value='section'>
-          {tab === 'infos' && (
-            <>
-              {profile.cv_filename && (
-                <p className='flex items-center gap-3 rounded-control bg-canvas/50 px-4 py-3 text-body text-body'>
-                  <FileCheck className='size-4 shrink-0 text-emerald-600' />
-                  <span>
-                    CV de base : <strong className='font-medium text-ink'>{profile.cv_filename}</strong>. Tes fichiers PDF se gèrent dans « Mes CV ».
-                  </span>
-                </p>
-              )}
+      <div className='flex w-full max-w-5xl gap-12 px-4 py-8 sm:px-6'>
+        <nav aria-label='Sections du profil' className='sticky top-24 hidden h-fit w-48 shrink-0 space-y-1 lg:block'>
+          {tabs.map((item) => (
+            <button
+              key={item.id}
+              type='button'
+              onClick={() => setTab(item.id)}
+              aria-current={tab === item.id ? 'page' : undefined}
+              className={`flex h-10 w-full items-center justify-between gap-2 rounded-control px-3 text-left text-body transition-colors ${
+                tab === item.id ? 'bg-black/5 font-medium text-ink' : 'text-muted hover:bg-black/[0.03] hover:text-ink'
+              }`}
+            >
+              <span className='truncate'>{item.label}</span>
+              {typeof item.count === 'number' && item.count > 0 && <span className='text-caption tabular-nums'>{item.count}</span>}
+            </button>
+          ))}
+        </nav>
 
-              <PersonalInfoCard {...ready} />
+        <div className='min-w-0 max-w-3xl flex-1 space-y-8'>
+          <CardStyleContext.Provider value='section'>
+            {tab === 'infos' && (
+              <>
+                {profile.cv_filename && (
+                  <p className='flex items-center gap-3 rounded-control bg-canvas/50 px-4 py-3 text-body text-body'>
+                    <FileCheck className='size-4 shrink-0 text-emerald-600' />
+                    <span>
+                      CV de base : <strong className='font-medium text-ink'>{profile.cv_filename}</strong>. Tes fichiers PDF se gèrent dans « Mes CV ».
+                    </span>
+                  </p>
+                )}
 
-              <CollapsibleBlock title='Expériences professionnelles' count={profile.experiences.length} hint='cliquer pour ouvrir'>
-                <ExperiencesCard {...ready} />
-              </CollapsibleBlock>
+                <PersonalInfoCard {...ready} />
 
-              <CollapsibleBlock title='Formations et diplômes' count={profile.formations.length} hint='cliquer pour ouvrir'>
-                <FormationsCard {...ready} />
-              </CollapsibleBlock>
+                <CollapsibleBlock title='Expériences professionnelles' count={profile.experiences.length} hint='cliquer pour ouvrir'>
+                  <ExperiencesCard {...ready} />
+                </CollapsibleBlock>
 
-              <ProfileFromTextCard {...ready} />
+                <CollapsibleBlock title='Formations et diplômes' count={profile.formations.length} hint='cliquer pour ouvrir'>
+                  <FormationsCard {...ready} />
+                </CollapsibleBlock>
 
-              <PrivacyConsentCard {...ready} />
-            </>
-          )}
+                <ProfileFromTextCard {...ready} />
 
-          {tab === 'criteres' && (
-            <>
-              <SearchCriteriaCard {...ready} />
-              <AdvancedOptionsCard {...ready} />
-            </>
-          )}
+                <PrivacyConsentCard {...ready} />
+              </>
+            )}
 
-          {tab === 'exclusions' && (
-            <>
-              <ExcludedRolesCard {...ready} />
-              <NegativeKeywordsCard {...ready} />
-            </>
-          )}
-        </CardStyleContext.Provider>
+            {tab === 'criteres' && (
+              <>
+                <SearchCriteriaCard {...ready} />
+                <AdvancedOptionsCard {...ready} />
+              </>
+            )}
+
+            {tab === 'exclusions' && (
+              <>
+                <ExcludedRolesCard {...ready} />
+                <NegativeKeywordsCard {...ready} />
+              </>
+            )}
+          </CardStyleContext.Provider>
+        </div>
       </div>
     </div>
   );

@@ -14,49 +14,30 @@ interface TabsProps {
   className?: string;
 }
 
-export const Tabs: React.FC<TabsProps> = ({
-  items,
-  activeId,
-  onChange,
-  className = '',
-}) => {
-  return (
-    <div
-      role="tablist"
-      aria-label="Onglets"
-      className={`flex gap-1 overflow-x-auto border-b border-zinc-200/90 ${className}`}
-    >
-      {items.map((item) => {
-        const active = item.id === activeId;
-        const count = item.count ?? item.badge;
-        return (
-          <button
-            key={item.id}
-            type="button"
-            role="tab"
-            aria-selected={active}
-            onClick={() => onChange(item.id)}
-            className={`whitespace-nowrap px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px transition-colors ${
-              active
-                ? 'border-red-600 text-zinc-950'
-                : 'border-transparent text-zinc-500 hover:text-zinc-800'
-            }`}
-          >
-            {item.label}
-            {typeof count === 'number' && count > 0 && (
-              <span
-                className={`ml-2 rounded-full px-2 py-0.5 text-[11px] font-semibold ${
-                  active
-                    ? 'bg-red-50 text-red-700'
-                    : 'bg-zinc-100 text-zinc-600'
-                }`}
-              >
-                {count}
-              </span>
-            )}
-          </button>
-        );
-      })}
-    </div>
-  );
-};
+export const Tabs: React.FC<TabsProps> = ({ items, activeId, onChange, className = '' }) => (
+  <div role='tablist' aria-label='Onglets' className={`flex gap-2 overflow-x-auto border-b border-line ${className}`}>
+    {items.map((item) => {
+      const active = item.id === activeId;
+      const count = item.count ?? item.badge;
+      return (
+        <button
+          key={item.id}
+          type='button'
+          role='tab'
+          aria-selected={active}
+          onClick={() => onChange(item.id)}
+          className={`-mb-px flex h-10 items-center gap-2 whitespace-nowrap border-b-2 px-3 text-body font-medium transition-colors ${
+            active ? 'border-accent text-ink' : 'border-transparent text-muted hover:text-ink'
+          }`}
+        >
+          {item.label}
+          {typeof count === 'number' && count > 0 && (
+            <span className={`rounded-full px-2 text-caption font-medium ${active ? 'bg-accent/10 text-accent' : 'bg-black/5 text-muted'}`}>
+              {count}
+            </span>
+          )}
+        </button>
+      );
+    })}
+  </div>
+);

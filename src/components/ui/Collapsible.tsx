@@ -17,27 +17,20 @@ export const Collapsible: React.FC<CollapsibleProps> = ({
   defaultOpen = false,
   children,
   className = '',
-}) => {
-  return (
-    <details
-      open={defaultOpen}
-      className={`group rounded-xl border border-zinc-200/90 bg-white shadow-2xs transition-all ${className}`}
-    >
-      <summary className="flex cursor-pointer select-none list-none items-center justify-between gap-3 px-4 py-3.5 [&::-webkit-details-marker]:hidden hover:bg-zinc-50/70 transition-colors rounded-xl">
-        <span className="flex items-center gap-2 text-sm font-bold text-zinc-900 min-w-0">
-          <span className="truncate">{title}</span>
-          {typeof count === 'number' && (
-            <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[11px] font-semibold text-zinc-600 shrink-0">
-              {count}
-            </span>
-          )}
-        </span>
-        <span className="flex items-center gap-2 text-xs text-zinc-400 shrink-0">
-          {hint && <span className="hidden sm:inline">{hint}</span>}
-          <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180 text-zinc-500" />
-        </span>
-      </summary>
-      <div className="border-t border-zinc-100 p-4">{children}</div>
-    </details>
-  );
-};
+}) => (
+  <details open={defaultOpen} className={`group rounded-control border border-line bg-white ${className}`}>
+    <summary className='flex min-h-12 cursor-pointer select-none list-none items-center justify-between gap-4 rounded-control px-4 py-3 transition-colors hover:bg-black/[0.02] [&::-webkit-details-marker]:hidden'>
+      <span className='flex min-w-0 items-center gap-2 text-body font-semibold text-ink'>
+        <span className='truncate'>{title}</span>
+        {typeof count === 'number' && (
+          <span className='shrink-0 rounded-full bg-black/5 px-2 text-caption font-medium text-muted'>{count}</span>
+        )}
+      </span>
+      <span className='flex shrink-0 items-center gap-2 text-caption text-muted'>
+        {hint && <span className='hidden sm:inline'>{hint}</span>}
+        <ChevronDown className='size-4 transition-transform group-open:rotate-180' />
+      </span>
+    </summary>
+    <div className='border-t border-line p-6'>{children}</div>
+  </details>
+);
