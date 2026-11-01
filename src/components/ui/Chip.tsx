@@ -10,6 +10,12 @@ export interface ChipProps {
   className?: string;
 }
 
+const VARIANTS = {
+  default: { box: 'bg-black/5 text-ink', remove: 'text-muted hover:bg-black/10 hover:text-ink' },
+  danger: { box: 'bg-rose-50 text-rose-900', remove: 'text-rose-700 hover:bg-rose-100 hover:text-rose-950' },
+  accent: { box: 'bg-accent/10 text-accent', remove: 'text-accent hover:bg-accent/10' },
+} as const;
+
 export const Chip: React.FC<ChipProps> = ({
   label,
   onRemove,
@@ -18,46 +24,30 @@ export const Chip: React.FC<ChipProps> = ({
   disabled = false,
   className = '',
 }) => {
-  let variantStyles = 'border-zinc-200/80 bg-zinc-100 text-zinc-800';
-  let removeStyles = 'text-zinc-500 hover:text-zinc-800 hover:bg-zinc-200/60';
-
-  if (variant === 'danger') {
-    variantStyles = 'border-rose-200 bg-rose-50 text-rose-900';
-    removeStyles = 'text-rose-700 hover:text-rose-950 hover:bg-rose-100';
-  } else if (variant === 'accent') {
-    variantStyles = 'border-red-200 bg-red-50 text-red-900';
-    removeStyles = 'text-red-700 hover:text-red-950 hover:bg-red-100';
-  }
+  const styles = VARIANTS[variant];
 
   return (
-    <span
-      className={`inline-flex items-center gap-1.5 rounded-full border py-1 pl-3 pr-1 text-xs font-semibold ${variantStyles} ${className}`}
-    >
+    <span className={`inline-flex h-8 items-center gap-1 rounded-full pl-3 pr-1 text-caption font-medium ${styles.box} ${className}`}>
       {onClick ? (
-        <button
-          type="button"
-          onClick={onClick}
-          className="hover:underline truncate max-w-[200px]"
-          title={label}
-        >
+        <button type='button' onClick={onClick} className='max-w-[200px] truncate hover:underline' title={label}>
           {label}
         </button>
       ) : (
-        <span className="truncate max-w-[200px]">{label}</span>
+        <span className='max-w-[200px] truncate'>{label}</span>
       )}
 
       {onRemove && (
         <button
-          type="button"
+          type='button'
           disabled={disabled}
           onClick={(e) => {
             e.stopPropagation();
             onRemove();
           }}
           aria-label={`Supprimer « ${label} »`}
-          className={`rounded-full p-0.5 transition-colors disabled:opacity-50 ${removeStyles}`}
+          className={`grid size-6 place-items-center rounded-full transition-colors disabled:opacity-50 ${styles.remove}`}
         >
-          <X className="h-3.5 w-3.5" />
+          <X className='size-3.5' />
         </button>
       )}
     </span>
