@@ -105,7 +105,7 @@ export const ProfileView: React.FC = () => {
             {tab === 'infos' && (
               <>
                 {profile.cv_filename && (
-                  <p className='flex items-center gap-3 rounded-control bg-canvas/50 px-4 py-3 text-body text-body'>
+                  <p className='flex items-center gap-3 rounded-control bg-canvas/50 px-4 py-3 text-body text-ink/70'>
                     <FileCheck className='size-4 shrink-0 text-emerald-600' />
                     <span>
                       CV de base : <strong className='font-medium text-ink'>{profile.cv_filename}</strong>. Tes fichiers PDF se gèrent dans « Mes CV ».
