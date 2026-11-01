@@ -6,7 +6,8 @@ import { employerLabel, originPortal, workloadLabel, relativeDate, normalizeJobU
 import { FormattedDescription } from './FormattedDescription';
 import { StatusDropdown } from './ui/StatusDropdown';
 import { Alert, Button } from './ui';
-import { Play, CheckCircle2, AlertTriangle, ShieldAlert, ExternalLink } from 'lucide-react';
+import type { AlertTone } from './ui/Alert';
+import { Play, ExternalLink } from 'lucide-react';
 import { formatReason } from '../lib/formatReason';
 
 interface JobDetailModalProps {
@@ -20,6 +21,9 @@ const JOB_STATUSES = ['Nouvelle', 'Intéressante', 'À postuler', 'Envoyée', 'R
 type JobStatus = (typeof JOB_STATUSES)[number];
 const STATUS_OPTIONS = JOB_STATUSES.map((value) => ({ value }));
 const isJobStatus = (value: string): value is JobStatus => (JOB_STATUSES as readonly string[]).includes(value);
+
+const APPLY_TONE: Record<string, AlertTone> = { sent: 'success', requires_review: 'warning' };
+const APPLY_LABEL: Record<string, string> = { sent: 'Candidature envoyée', requires_review: 'Relecture requise' };
 
 export const JobDetailModal: React.FC<JobDetailModalProps> = ({ job, onStatusUpdated }) => {
   const [saving, setSaving] = useState(false);
@@ -74,76 +78,53 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({ job, onStatusUpd
   const exclusionRules = job.matched_exclusions?.length ? job.matched_exclusions : [job.exclusion_reason || "Règle d'exclusion"];
 
   return (
-    <article className="flex-1 min-h-0 min-w-0 overflow-y-auto custom-scrollbar bg-white px-4 sm:px-10 pt-3 sm:pt-5 pb-[max(1rem,env(safe-area-inset-bottom))] space-y-4">
-      <header className="space-y-2">
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight leading-snug text-zinc-900 break-words">{job.title}</h1>
-        <p className="text-sm text-zinc-500 leading-6">{meta.join(' · ')}</p>
+    <article className='custom-scrollbar min-h-0 min-w-0 flex-1 space-y-6 overflow-y-auto bg-white px-4 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:px-10'>
+      <header className='space-y-2'>
+        <h1 className='break-words text-title font-semibold text-ink'>{job.title}</h1>
+        <p className='text-body text-muted'>{meta.join(' · ')}</p>
 
-        {/* Actions : Statut + Voir l'offre + Postuler */}
-        <div className="flex flex-wrap items-center gap-2 pt-1">
-          <StatusDropdown value={status} options={STATUS_OPTIONS} onChange={handleStatusChange} disabled={saving} label="Statut de suivi" />
+        <div className='flex flex-wrap items-center gap-2 pt-2'>
+          <StatusDropdown value={status} options={STATUS_OPTIONS} onChange={handleStatusChange} disabled={saving} label='Statut de suivi' />
 
-          {/* Voir l'offre sur le site original */}
           {normalizeJobUrl(job.url) && (
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => window.open(normalizeJobUrl(job.url), '_blank', 'noopener,noreferrer')}
-              className="inline-flex items-center gap-1.5 text-zinc-700"
-            >
-              <ExternalLink className="w-4 h-4" />
+            <Button variant='secondary' size='sm' onClick={() => window.open(normalizeJobUrl(job.url), '_blank', 'noopener,noreferrer')}>
+              <ExternalLink className='size-4' />
               <span>Voir l'offre{origin ? ` sur ${origin}` : ''}</span>
             </Button>
           )}
 
-          {/* Postuler (Playwright — sélectionne le CV + génère la lettre + postule) */}
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={handleAutoApply}
-            disabled={applying}
-            className="inline-flex items-center gap-1.5 font-semibold bg-red-600 hover:bg-red-700 text-white shadow-2xs"
-          >
-            <Play className="w-4 h-4 fill-current" />
+          <Button variant='accent' size='sm' onClick={handleAutoApply} disabled={applying}>
+            <Play className='size-4' />
             {applying ? 'Agent en cours...' : 'Postuler'}
           </Button>
         </div>
       </header>
 
-      {actionError && <Alert tone="error">{actionError}</Alert>}
+      {actionError && <Alert tone='error'>{actionError}</Alert>}
 
-      {/* Résultat de la postulation automatique Playwright */}
       {applyResult && (
-        <div className={`p-4 rounded-lg border text-sm space-y-2 ${
-          applyResult.status === 'sent' ? 'bg-emerald-50 border-emerald-300 text-emerald-900' :
-          applyResult.status === 'requires_review' ? 'bg-amber-50 border-amber-300 text-amber-900' :
-          'bg-rose-50 border-rose-300 text-rose-900'
-        }`}>
-          <div className="flex items-center gap-2 font-bold">
-            {applyResult.status === 'sent' && <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />}
-            {applyResult.status === 'requires_review' && <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0" />}
-            {applyResult.status !== 'sent' && applyResult.status !== 'requires_review' && <ShieldAlert className="w-5 h-5 text-rose-600 flex-shrink-0" />}
-            <span>Résultat Agent : {applyResult.status.toUpperCase()}</span>
-          </div>
-          <p className="text-xs leading-relaxed">{applyResult.message}</p>
+        <Alert tone={APPLY_TONE[applyResult.status] ?? 'error'}>
+          <p className='font-medium'>{APPLY_LABEL[applyResult.status] ?? `Échec : ${applyResult.status}`}</p>
+          <p>{applyResult.message}</p>
           {applyResult.details && (
-            <div className="text-xs font-mono pt-1 text-zinc-700 space-y-0.5">
-              <div>Champs remplis : {applyResult.details.fieldsFilled.join(', ') || 'aucun'}</div>
+            <p className='pt-2 text-caption'>
+              Champs remplis : {applyResult.details.fieldsFilled.join(', ') || 'aucun'}
               {applyResult.details.unknownQuestions?.length > 0 && (
-                <div className="text-amber-800 font-semibold">Questions inconnues : {applyResult.details.unknownQuestions.join(', ')}</div>
+                <span className='block font-medium'>Questions inconnues : {applyResult.details.unknownQuestions.join(', ')}</span>
               )}
-            </div>
+            </p>
           )}
-        </div>
+        </Alert>
       )}
 
-      {/* Offre exclue — raison(s) lisible(s) */}
       {job.is_excluded && (
-        <Alert tone="error">
-          <span className="font-semibold block">{exclusionRules.length > 1 ? `Offre masquée par ${exclusionRules.length} règles d'exclusion :` : "Offre masquée par une règle d'exclusion :"}</span>
-          <span className="flex flex-wrap items-center gap-1.5 mt-2">
+        <Alert tone='error'>
+          <p className='font-medium'>
+            {exclusionRules.length > 1 ? `Offre masquée par ${exclusionRules.length} règles d'exclusion :` : "Offre masquée par une règle d'exclusion :"}
+          </p>
+          <span className='flex flex-wrap items-center gap-2 pt-2'>
             {exclusionRules.map((rule, idx) => (
-              <span key={`rule-${idx}-${rule}`} className="inline-flex items-center px-2.5 py-1 rounded-md bg-rose-100 border border-rose-300 text-rose-900 font-medium text-xs">
+              <span key={`rule-${idx}-${rule}`} className='inline-flex h-6 items-center rounded-control bg-rose-100 px-2 text-caption font-medium'>
                 {formatReason(rule)}
               </span>
             ))}
@@ -151,12 +132,11 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({ job, onStatusUpd
         </Alert>
       )}
 
-      <section aria-label="Description de l'offre" className="border-t border-zinc-200/80 pt-3">
+      <section aria-label="Description de l'offre" className='border-t border-line pt-6'>
         <FormattedDescription text={job.description || ''} />
       </section>
 
-      {/* Source */}
-      <footer className="pt-2 border-t border-zinc-200/80 text-xs text-zinc-400 flex flex-wrap gap-x-4 gap-y-1">
+      <footer className='flex flex-wrap gap-x-4 gap-y-1 border-t border-line pt-4 text-caption text-muted'>
         <span>Source : {sourceLabel(job.source)}</span>
         {job.external_id && <span>ID : {job.external_id}</span>}
       </footer>
