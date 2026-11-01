@@ -11,6 +11,10 @@ import { uploadCvFile } from '../../services/api';
 
 type Editor = ReturnType<typeof useProfileAutosave> & { profile: UserProfile };
 
+// Surfaces internes (sous-cartes) : un seul style pour tout le profil
+const SUBCARD = 'space-y-4 rounded-control border border-line bg-black/[0.02] p-4';
+const CAPTION = 'text-caption text-muted';
+
 // ── Bloc repliable (utilise le composant UI standard) ─────────────────────────────
 export const CollapsibleBlock = Collapsible;
 
@@ -50,20 +54,20 @@ export const CvImportCard: React.FC<Pick<Editor, 'cvPasteText' | 'setCvPasteText
 
   return (
     <Card>
-      <CardHeader title="Document CV & Analyse" icon={<FileText />} right={<span className="text-xs font-medium text-zinc-500">Document persistant</span>} />
-      
-      <div className="rounded-lg border border-zinc-200 bg-zinc-50/70 p-4 space-y-3">
-        <div className="flex items-center justify-between gap-2 flex-wrap">
+      <CardHeader title='Document CV & Analyse' icon={<FileText />} right={<span className={CAPTION}>Document persistant</span>} />
+
+      <div className={SUBCARD}>
+        <div className='flex flex-wrap items-center justify-between gap-4'>
           <div>
-            <span className="text-xs font-semibold text-zinc-700 block">Fichier CV configuré pour les candidatures</span>
-            <span className="font-mono text-sm font-bold text-zinc-900">
+            <span className='block text-caption font-medium text-ink/70'>Fichier CV configuré pour les candidatures</span>
+            <span className='font-mono text-body font-semibold text-ink'>
               {profile.cv_filename || 'Aucun fichier CV configuré'}
             </span>
           </div>
-          <label className="inline-flex items-center gap-1.5 cursor-pointer rounded-md bg-white border border-zinc-300 px-3 py-1.5 text-xs font-semibold text-zinc-700 shadow-sm hover:bg-zinc-50">
-            <Upload className="h-3.5 w-3.5 text-zinc-500" />
+          <label className='inline-flex h-8 cursor-pointer items-center gap-2 rounded-control border border-line bg-white px-3 text-body font-medium text-ink shadow-raised hover:bg-canvas/60'>
+            <Upload className='size-4 text-muted' />
             <span>{uploading ? 'Téléversement…' : 'Choisir un fichier CV (PDF)'}</span>
-            <input type="file" accept=".pdf,.doc,.docx" onChange={handleFileUpload} disabled={uploading} className="sr-only" />
+            <input type='file' accept='.pdf,.doc,.docx' onChange={handleFileUpload} disabled={uploading} className='sr-only' />
           </label>
         </div>
         {uploadFeedback && (
@@ -71,22 +75,22 @@ export const CvImportCard: React.FC<Pick<Editor, 'cvPasteText' | 'setCvPasteText
             {uploadFeedback}
           </Alert>
         )}
-        <p className="text-[11px] text-zinc-500">
+        <p className={CAPTION}>
           Ce fichier est vérifié sur le disque avant chaque simulation de candidature. S'il est absent, la candidature bascule automatiquement au statut « À vérifier ».
         </p>
       </div>
 
-      <div className="pt-2 border-t border-zinc-100 space-y-2">
-        <span className="text-xs font-semibold text-zinc-700 block">Analyser le texte du CV par copier-coller</span>
-        <p className="text-xs text-zinc-500 leading-relaxed">Collez le texte brut de votre CV pour pré-remplir automatiquement les expériences, formations et compétences ci-dessous.</p>
-        <Textarea rows={4} className="font-mono text-xs" value={cvPasteText} onChange={(e) => setCvPasteText(e.target.value)} placeholder="Collez ici le contenu de votre CV..." />
-        <Button onClick={handleAnalyzeCv} disabled={analyzing} size="sm">
-          {analyzing ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+      <div className='space-y-2 border-t border-line pt-4'>
+        <span className='block text-body font-medium text-ink'>Analyser le texte du CV par copier-coller</span>
+        <p className={CAPTION}>Collez le texte brut de votre CV pour pré-remplir automatiquement les expériences, formations et compétences ci-dessous.</p>
+        <Textarea rows={4} className='font-mono text-caption' value={cvPasteText} onChange={(e) => setCvPasteText(e.target.value)} placeholder='Collez ici le contenu de votre CV...' />
+        <Button onClick={handleAnalyzeCv} disabled={analyzing} size='sm'>
+          {analyzing ? <RefreshCw className='size-4 animate-spin' /> : <Upload className='size-4' />}
           <span>{analyzing ? 'Analyse du CV en cours...' : 'Analyser le texte du CV'}</span>
         </Button>
       </div>
-      {cvSuccess && <Alert tone="success">{cvSuccess}</Alert>}
-      {cvError && <Alert tone="error">{cvError}</Alert>}
+      {cvSuccess && <Alert tone='success'>{cvSuccess}</Alert>}
+      {cvError && <Alert tone='error'>{cvError}</Alert>}
     </Card>
   );
 };
@@ -95,50 +99,50 @@ export const CvImportCard: React.FC<Pick<Editor, 'cvPasteText' | 'setCvPasteText
 export const ProfileFromTextCard: React.FC<Pick<Editor, 'cvPasteText' | 'setCvPasteText' | 'analyzing' | 'cvSuccess' | 'cvError' | 'handleAnalyzeCv'>> = ({
   cvPasteText, setCvPasteText, analyzing, cvSuccess, cvError, handleAnalyzeCv,
 }) => (
-  <CollapsibleBlock title="Remplir mon profil depuis le texte d’un CV" hint="copier-coller">
-    <div className="space-y-3">
-      <p className="text-xs text-zinc-500 leading-relaxed">
+  <CollapsibleBlock title='Remplir mon profil depuis le texte d’un CV' hint='copier-coller'>
+    <div className='space-y-4'>
+      <p className={CAPTION}>
         Colle le texte de ton CV : l’app pré-remplit tes expériences, formations et compétences. Cette action peut remplacer ce qui est déjà saisi. Tes fichiers PDF se gèrent dans l’onglet « Mes CV ».
       </p>
-      <Textarea rows={5} className="font-mono text-xs" value={cvPasteText} onChange={(e) => setCvPasteText(e.target.value)} placeholder="Colle ici le contenu de ton CV..." />
-      <Button onClick={handleAnalyzeCv} disabled={analyzing || !cvPasteText.trim()} size="sm">
-        {analyzing ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+      <Textarea rows={5} className='font-mono text-caption' value={cvPasteText} onChange={(e) => setCvPasteText(e.target.value)} placeholder='Colle ici le contenu de ton CV...' />
+      <Button onClick={handleAnalyzeCv} disabled={analyzing || !cvPasteText.trim()} size='sm'>
+        {analyzing ? <RefreshCw className='size-4 animate-spin' /> : <Upload className='size-4' />}
         <span>{analyzing ? 'Analyse en cours...' : 'Analyser et remplir mon profil'}</span>
       </Button>
-      {cvSuccess && <Alert tone="success">{cvSuccess}</Alert>}
-      {cvError && <Alert tone="error">{cvError}</Alert>}
+      {cvSuccess && <Alert tone='success'>{cvSuccess}</Alert>}
+      {cvError && <Alert tone='error'>{cvError}</Alert>}
     </div>
   </CollapsibleBlock>
 );
 
 export const PersonalInfoCard: React.FC<Pick<Editor, 'profile' | 'setProfile'>> = ({ profile, setProfile }) => (
   <Card>
-    <CardHeader title="Informations personnelles et coordonnées" icon={<User />} />
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <Field label="Prénom"><Input value={profile.first_name || ''} onChange={(e) => setProfile({ ...profile, first_name: e.target.value })} /></Field>
-      <Field label="Nom"><Input value={profile.last_name || ''} onChange={(e) => setProfile({ ...profile, last_name: e.target.value })} /></Field>
-      <Field label="Intitulé / Poste recherché"><Input value={profile.current_title || ''} onChange={(e) => setProfile({ ...profile, current_title: e.target.value })} /></Field>
-      <Field label="Email"><Input type="email" value={profile.email || ''} onChange={(e) => setProfile({ ...profile, email: e.target.value })} /></Field>
-      <Field label="Téléphone"><Input value={profile.phone || ''} onChange={(e) => setProfile({ ...profile, phone: e.target.value })} /></Field>
-      <Field label="Ville et adresse"><Input value={profile.city || ''} onChange={(e) => setProfile({ ...profile, city: e.target.value })} /></Field>
-      <Field label="Canton de résidence"><Input value={profile.canton || ''} onChange={(e) => setProfile({ ...profile, canton: e.target.value })} /></Field>
-      <Field label="Permis de travail en Suisse">
+    <CardHeader title='Informations personnelles et coordonnées' icon={<User />} />
+    <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+      <Field label='Prénom'><Input value={profile.first_name || ''} onChange={(e) => setProfile({ ...profile, first_name: e.target.value })} /></Field>
+      <Field label='Nom'><Input value={profile.last_name || ''} onChange={(e) => setProfile({ ...profile, last_name: e.target.value })} /></Field>
+      <Field label='Intitulé / Poste recherché' className='sm:col-span-2'><Input value={profile.current_title || ''} onChange={(e) => setProfile({ ...profile, current_title: e.target.value })} /></Field>
+      <Field label='Email'><Input type='email' value={profile.email || ''} onChange={(e) => setProfile({ ...profile, email: e.target.value })} /></Field>
+      <Field label='Téléphone'><Input value={profile.phone || ''} onChange={(e) => setProfile({ ...profile, phone: e.target.value })} /></Field>
+      <Field label='Ville et adresse'><Input value={profile.city || ''} onChange={(e) => setProfile({ ...profile, city: e.target.value })} /></Field>
+      <Field label='Canton de résidence'><Input value={profile.canton || ''} onChange={(e) => setProfile({ ...profile, canton: e.target.value })} /></Field>
+      <Field label='Permis de travail en Suisse' className='sm:col-span-2'>
         <Select
           value={profile.swiss_permit || ''}
           onChange={(e) => setProfile({ ...profile, swiss_permit: e.target.value })}
         >
-          <option value="">-- Sélectionnez votre permis --</option>
-          <option value="Nationalité suisse">Nationalité suisse / Citoyen</option>
-          <option value="Permis C (Établissement)">Permis C (Établissement)</option>
-          <option value="Permis B (Séjour)">Permis B (Séjour avec travail)</option>
-          <option value="Permis G (Frontalier)">Permis G (Frontalier)</option>
-          <option value="Permis L (Courte durée)">Permis L (Courte durée)</option>
-          <option value="Citoyen UE/AELE (sans permis)">Citoyen UE/AELE (sans permis)</option>
-          <option value="Hors UE/AELE (nécessite visa)">Hors UE/AELE (nécessite visa)</option>
+          <option value=''>-- Sélectionnez votre permis --</option>
+          <option value='Nationalité suisse'>Nationalité suisse / Citoyen</option>
+          <option value='Permis C (Établissement)'>Permis C (Établissement)</option>
+          <option value='Permis B (Séjour)'>Permis B (Séjour avec travail)</option>
+          <option value='Permis G (Frontalier)'>Permis G (Frontalier)</option>
+          <option value='Permis L (Courte durée)'>Permis L (Courte durée)</option>
+          <option value='Citoyen UE/AELE (sans permis)'>Citoyen UE/AELE (sans permis)</option>
+          <option value='Hors UE/AELE (nécessite visa)'>Hors UE/AELE (nécessite visa)</option>
         </Select>
       </Field>
-      <Field label="Langues"><Input value={profile.languages || ''} onChange={(e) => setProfile({ ...profile, languages: e.target.value })} /></Field>
-      <Field label="Diplômes"><Input value={profile.diplomas || ''} onChange={(e) => setProfile({ ...profile, diplomas: e.target.value })} /></Field>
+      <Field label='Langues'><Input value={profile.languages || ''} onChange={(e) => setProfile({ ...profile, languages: e.target.value })} /></Field>
+      <Field label='Diplômes'><Input value={profile.diplomas || ''} onChange={(e) => setProfile({ ...profile, diplomas: e.target.value })} /></Field>
     </div>
   </Card>
 );
@@ -147,28 +151,28 @@ export const ExperiencesCard: React.FC<Pick<Editor, 'profile' | 'updateExperienc
   profile, updateExperience, addExperience, removeExperience,
 }) => (
   <Card>
-    <CardHeader title={`Expériences professionnelles (${profile.experiences.length})`} icon={<Briefcase />} right={<Button size="sm" onClick={addExperience}><Plus className="w-3.5 h-3.5" /><span>Ajouter</span></Button>} />
+    <CardHeader title={`Expériences professionnelles (${profile.experiences.length})`} icon={<Briefcase />} right={<Button size='sm' onClick={addExperience}><Plus className='size-4' /><span>Ajouter</span></Button>} />
     {profile.experiences.map((exp, idx) => (
-      <div key={`exp-${idx}-${exp.company || ''}`} className="rounded-lg border border-zinc-200 bg-zinc-50/70 p-4 space-y-3">
-        <div className="flex items-center justify-between gap-3">
-          <span className="font-semibold text-zinc-950">{exp.company || 'Nouvelle entreprise'}{exp.title ? ` · ${exp.title}` : ''}</span>
-          <Button size="sm" variant="danger" onClick={() => removeExperience(idx)}><X className="w-3.5 h-3.5" /><span>Supprimer</span></Button>
+      <div key={`exp-${idx}-${exp.company || ''}`} className={SUBCARD}>
+        <div className='flex items-center justify-between gap-4'>
+          <span className='font-semibold text-ink'>{exp.company || 'Nouvelle entreprise'}{exp.title ? ` · ${exp.title}` : ''}</span>
+          <Button size='sm' variant='danger' onClick={() => removeExperience(idx)}><X className='size-4' /><span>Supprimer</span></Button>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <Field label="Entreprise"><Input value={exp.company} onChange={(e) => updateExperience(idx, 'company', e.target.value)} /></Field>
-          <Field label="Intitulé du poste"><Input value={exp.title} onChange={(e) => updateExperience(idx, 'title', e.target.value)} /></Field>
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+          <Field label='Entreprise'><Input value={exp.company} onChange={(e) => updateExperience(idx, 'company', e.target.value)} /></Field>
+          <Field label='Intitulé du poste'><Input value={exp.title} onChange={(e) => updateExperience(idx, 'title', e.target.value)} /></Field>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <Field label="Lieu"><Input value={exp.location} onChange={(e) => updateExperience(idx, 'location', e.target.value)} /></Field>
-          <Field label="Date de début"><Input value={exp.start_date} onChange={(e) => updateExperience(idx, 'start_date', e.target.value)} /></Field>
-          <Field label="Date de fin"><Input value={exp.end_date} onChange={(e) => updateExperience(idx, 'end_date', e.target.value)} /></Field>
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-3'>
+          <Field label='Lieu'><Input value={exp.location} onChange={(e) => updateExperience(idx, 'location', e.target.value)} /></Field>
+          <Field label='Date de début'><Input value={exp.start_date} onChange={(e) => updateExperience(idx, 'start_date', e.target.value)} /></Field>
+          <Field label='Date de fin'><Input value={exp.end_date} onChange={(e) => updateExperience(idx, 'end_date', e.target.value)} /></Field>
         </div>
-        <Field label="Réalisations" hint={`${(exp.realizations || []).length} puces`}>
+        <Field label='Réalisations' hint={`${(exp.realizations || []).length} puces`}>
           <Textarea rows={4} value={(exp.realizations || []).join('\n')} onChange={(e) => updateExperience(idx, 'realizations', e.target.value.split('\n'))} />
         </Field>
       </div>
     ))}
-    <Button className="w-full" onClick={addExperience}><Plus className="w-4 h-4" /><span>Ajouter une expérience</span></Button>
+    <Button className='w-full' onClick={addExperience}><Plus className='size-4' /><span>Ajouter une expérience</span></Button>
   </Card>
 );
 
@@ -176,25 +180,25 @@ export const FormationsCard: React.FC<Pick<Editor, 'profile' | 'updateFormation'
   profile, updateFormation, addFormation, removeFormation,
 }) => (
   <Card>
-    <CardHeader title={`Formations et diplômes (${profile.formations.length})`} icon={<GraduationCap />} right={<Button size="sm" onClick={addFormation}><Plus className="w-3.5 h-3.5" /><span>Ajouter</span></Button>} />
+    <CardHeader title={`Formations et diplômes (${profile.formations.length})`} icon={<GraduationCap />} right={<Button size='sm' onClick={addFormation}><Plus className='size-4' /><span>Ajouter</span></Button>} />
     {profile.formations.map((form, idx) => (
-      <div key={`form-${idx}-${form.diploma || ''}`} className="rounded-lg border border-zinc-200 bg-zinc-50/70 p-4 space-y-3">
-        <div className="flex items-center justify-between gap-3">
-          <span className="font-semibold text-zinc-950">{form.diploma || 'Nouveau diplôme'}</span>
-          <Button size="sm" variant="danger" onClick={() => removeFormation(idx)}><X className="w-3.5 h-3.5" /><span>Supprimer</span></Button>
+      <div key={`form-${idx}-${form.diploma || ''}`} className={SUBCARD}>
+        <div className='flex items-center justify-between gap-4'>
+          <span className='font-semibold text-ink'>{form.diploma || 'Nouveau diplôme'}</span>
+          <Button size='sm' variant='danger' onClick={() => removeFormation(idx)}><X className='size-4' /><span>Supprimer</span></Button>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <Field label="Diplôme"><Input value={form.diploma} onChange={(e) => updateFormation(idx, 'diploma', e.target.value)} /></Field>
-          <Field label="Établissement"><Input value={form.institution} onChange={(e) => updateFormation(idx, 'institution', e.target.value)} /></Field>
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+          <Field label='Diplôme'><Input value={form.diploma} onChange={(e) => updateFormation(idx, 'diploma', e.target.value)} /></Field>
+          <Field label='Établissement'><Input value={form.institution} onChange={(e) => updateFormation(idx, 'institution', e.target.value)} /></Field>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <Field label="Lieu"><Input value={form.location} onChange={(e) => updateFormation(idx, 'location', e.target.value)} /></Field>
-          <Field label="Date de début"><Input value={form.start_date} onChange={(e) => updateFormation(idx, 'start_date', e.target.value)} /></Field>
-          <Field label="Date de fin"><Input value={form.end_date} onChange={(e) => updateFormation(idx, 'end_date', e.target.value)} /></Field>
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-3'>
+          <Field label='Lieu'><Input value={form.location} onChange={(e) => updateFormation(idx, 'location', e.target.value)} /></Field>
+          <Field label='Date de début'><Input value={form.start_date} onChange={(e) => updateFormation(idx, 'start_date', e.target.value)} /></Field>
+          <Field label='Date de fin'><Input value={form.end_date} onChange={(e) => updateFormation(idx, 'end_date', e.target.value)} /></Field>
         </div>
       </div>
     ))}
-    <Button className="w-full" onClick={addFormation}><Plus className="w-4 h-4" /><span>Ajouter une formation</span></Button>
+    <Button className='w-full' onClick={addFormation}><Plus className='size-4' /><span>Ajouter une formation</span></Button>
   </Card>
 );
 
@@ -217,26 +221,26 @@ export const SearchCriteriaCard: React.FC<Pick<Editor, 'profile' | 'setProfile'>
 
   return (
     <Card>
-      <CardHeader title="Critères de recherche" icon={<Compass />} />
-      <p className="text-sm text-zinc-600">
+      <CardHeader title='Critères de recherche' icon={<Compass />} />
+      <p className='text-body text-ink/70'>
         Ces critères servent à garder ou écarter les offres. Un champ vide veut dire « aucune limite ».
       </p>
 
-      <div className="space-y-2">
-        <span className="text-sm font-semibold text-zinc-800 block">Cantons</span>
-        <div className="flex flex-wrap gap-1.5">
+      <div className='space-y-2'>
+        <span className='block text-body font-medium text-ink'>Cantons</span>
+        <div className='flex flex-wrap gap-2'>
           {SWISS_CANTONS.map((code) => {
             const active = wanted.includes(code);
             return (
               <button
                 key={code}
-                type="button"
+                type='button'
                 aria-pressed={active}
                 onClick={() => toggleCanton(code)}
-                className={`rounded-md border px-2.5 py-1 text-xs font-mono font-semibold transition-colors ${
+                className={`h-8 min-w-10 rounded-control border px-3 font-mono text-caption font-medium transition-colors ${
                   active
-                    ? 'border-zinc-900 bg-zinc-900 text-white'
-                    : 'border-zinc-200 bg-white text-zinc-600 hover:border-zinc-400'
+                    ? 'border-ink bg-ink text-white'
+                    : 'border-line bg-white text-muted hover:border-ink/40 hover:text-ink'
                 }`}
               >
                 {code}
@@ -244,48 +248,48 @@ export const SearchCriteriaCard: React.FC<Pick<Editor, 'profile' | 'setProfile'>
             );
           })}
         </div>
-        <p className="text-xs text-zinc-500">
+        <p className={CAPTION}>
           {wanted.length === 0
             ? 'Aucun canton coché : toute la Suisse est acceptée.'
             : `Seules les offres de ${wanted.join(', ')} sont gardées. Une offre dont le canton est inconnu est conservée.`}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Field label="Salaire annuel minimum (CHF)" hint="Vide = aucune limite. Une offre sans salaire affiché est conservée.">
-          <Input inputMode="numeric" placeholder="ex. 120000" value={profile.salary_min || ''} onChange={(e) => setProfile({ ...profile, salary_min: e.target.value })} />
+      <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+        <Field label='Salaire annuel minimum (CHF)' hint='Vide = aucune limite. Une offre sans salaire affiché est conservée.'>
+          <Input inputMode='numeric' placeholder='ex. 120000' value={profile.salary_min || ''} onChange={(e) => setProfile({ ...profile, salary_min: e.target.value })} />
         </Field>
-        <Field label="Taux d'occupation maximum (%)" hint="Ex. 90 : on garde les offres qui permettent de travailler à 90 % ou moins. Vide ou 100 = aucune limite.">
-          <Input inputMode="numeric" placeholder="ex. 90" value={profile.workload || ''} onChange={(e) => setProfile({ ...profile, workload: e.target.value })} />
+        <Field label="Taux d'occupation maximum (%)" hint='Ex. 90 : on garde les offres qui permettent de travailler à 90 % ou moins. Vide ou 100 = aucune limite.'>
+          <Input inputMode='numeric' placeholder='ex. 90' value={profile.workload || ''} onChange={(e) => setProfile({ ...profile, workload: e.target.value })} />
         </Field>
       </div>
 
-      <label className="flex items-center gap-2.5 cursor-pointer">
-        <input type="checkbox" checked={profile.remote_accepted} onChange={(e) => setProfile({ ...profile, remote_accepted: e.target.checked })} className="w-4 h-4 rounded accent-zinc-900" />
-        <span className="text-sm font-medium text-zinc-800">Télétravail accepté</span>
+      <label className='flex cursor-pointer items-center gap-3'>
+        <input type='checkbox' checked={profile.remote_accepted} onChange={(e) => setProfile({ ...profile, remote_accepted: e.target.checked })} className='size-4 rounded accent-ink' />
+        <span className='text-body font-medium text-ink'>Télétravail accepté</span>
       </label>
 
-      <TagInput label="Postes ciblés" tone="indigo" values={profile.wanted_roles || []} onChange={(wanted_roles) => setProfile({ ...profile, wanted_roles })} />
+      <TagInput label='Postes ciblés' tone='indigo' values={profile.wanted_roles || []} onChange={(wanted_roles) => setProfile({ ...profile, wanted_roles })} />
     </Card>
   );
 };
 
 export const AdvancedOptionsCard: React.FC<Pick<Editor, 'profile' | 'setProfile'>> = ({ profile, setProfile }) => (
-  <CollapsibleBlock title="Options avancées" hint="compétences, mots-clés positifs, pertinence">
-    <div className="space-y-5">
-      <p className="text-xs text-zinc-500 leading-relaxed">
+  <CollapsibleBlock title='Options avancées' hint='compétences, mots-clés positifs, pertinence'>
+    <div className='space-y-6'>
+      <p className={CAPTION}>
         Utile surtout pour adapter ton CV à chaque offre. Tu peux ignorer ce bloc.
       </p>
-      <TagInput label="Compétences" tone="emerald" values={profile.skills || []} onChange={(skills) => setProfile({ ...profile, skills })} />
-      <TagInput label="Mots-clés positifs" tone="emerald" values={profile.positive_keywords || []} onChange={(positive_keywords) => setProfile({ ...profile, positive_keywords })} />
-      <label className="flex items-center gap-2.5 cursor-pointer pt-1">
+      <TagInput label='Compétences' tone='emerald' values={profile.skills || []} onChange={(skills) => setProfile({ ...profile, skills })} />
+      <TagInput label='Mots-clés positifs' tone='emerald' values={profile.positive_keywords || []} onChange={(positive_keywords) => setProfile({ ...profile, positive_keywords })} />
+      <label className='flex cursor-pointer items-center gap-3'>
         <input
-          type="checkbox"
+          type='checkbox'
           checked={Boolean(profile.enable_relevance_matching)}
           onChange={(e) => setProfile({ ...profile, enable_relevance_matching: e.target.checked })}
-          className="w-4 h-4 rounded accent-zinc-900"
+          className='size-4 rounded accent-ink'
         />
-        <span className="text-sm font-medium text-zinc-800">
+        <span className='text-body font-medium text-ink'>
           Filtrage strict par pertinence métier (matching avec les compétences et postes du profil)
         </span>
       </label>
@@ -358,18 +362,18 @@ export const ExcludedRolesCard: React.FC<Pick<Editor, 'profile' | 'setProfile'>>
   return (
     <Card>
       <CardHeader
-        title="Ce que je ne veux pas — titres d’offres"
+        title='Ce que je ne veux pas — titres d’offres'
         icon={<Ban />}
-        right={<span className="text-xs font-semibold text-zinc-500">{roles.length} règle{roles.length > 1 ? 's' : ''}</span>}
+        right={<span className={CAPTION}>{roles.length} règle{roles.length > 1 ? 's' : ''}</span>}
       />
-      <p className="text-sm text-zinc-600 leading-relaxed">
-        Une offre dont le <strong>titre</strong> contient tous les mots d’une règle est masquée. La description n’est jamais lue. Exemple : « vendeur boulangerie ».
+      <p className='text-body text-ink/70'>
+        Une offre dont le <strong className='font-medium text-ink'>titre</strong> contient tous les mots d’une règle est masquée. La description n’est jamais lue. Exemple : « vendeur boulangerie ».
       </p>
 
-      <div className="flex gap-2">
+      <div className='flex gap-2'>
         <Input
           value={draft}
-          placeholder="Ex: comptable, téléconseiller"
+          placeholder='Ex: comptable, téléconseiller'
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
@@ -378,40 +382,40 @@ export const ExcludedRolesCard: React.FC<Pick<Editor, 'profile' | 'setProfile'>>
             }
           }}
         />
-        <Button variant="danger" onClick={handleAdd} disabled={!draft.trim()}>
-          <Plus className="w-4 h-4" />
+        <Button variant='danger' onClick={handleAdd} disabled={!draft.trim()}>
+          <Plus className='size-4' />
           <span>Ajouter</span>
         </Button>
       </div>
-      <p className="text-xs text-zinc-500">Tu peux en ajouter plusieurs d’un coup en les séparant par une virgule.</p>
-      {notice && <p className="text-xs font-medium text-emerald-700">{notice}</p>}
+      <p className={CAPTION}>Tu peux en ajouter plusieurs d’un coup en les séparant par une virgule.</p>
+      {notice && <p className='text-caption font-medium text-emerald-700'>{notice}</p>}
 
       {roles.length === 0 ? (
-        <p className="text-sm text-zinc-500">Aucune exclusion active.</p>
+        <p className='text-body text-muted'>Aucune exclusion active.</p>
       ) : (
-        <div className="space-y-3">
-          <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+        <div className='space-y-4'>
+          <div className='relative'>
+            <Search className='pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted' />
             <input
-              type="search"
+              type='search'
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Rechercher dans mes règles…"
-              className="w-full rounded-lg border border-zinc-200 bg-white py-2 pl-9 pr-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none"
+              placeholder='Rechercher dans mes règles…'
+              className='h-10 w-full rounded-control border border-line bg-white pl-9 pr-3 text-body text-ink placeholder:text-muted focus:border-ink focus:outline-none'
             />
           </div>
           {query && (
-            <p className="text-xs text-zinc-500">{visible.length} résultat(s) sur {roles.length}</p>
+            <p className={CAPTION}>{visible.length} résultat(s) sur {roles.length}</p>
           )}
 
-          <div className="max-h-[400px] overflow-y-auto rounded-lg border border-zinc-200 bg-zinc-50/60 p-3 custom-scrollbar">
+          <div className='custom-scrollbar max-h-[400px] overflow-y-auto rounded-control border border-line bg-black/[0.02] p-4'>
             {visible.length === 0 ? (
-              <p className="text-sm text-zinc-500">Aucune règle ne correspond à « {search} ».</p>
+              <p className='text-body text-muted'>Aucune règle ne correspond à « {search} ».</p>
             ) : (
-              <div className="flex flex-wrap gap-2">
+              <div className='flex flex-wrap gap-2'>
                 {visible.map(({ role, index }) =>
                   editingIndex === index ? (
-                    <span key={`edit-${index}`} className="inline-flex items-center gap-1 rounded-full border border-zinc-300 bg-white px-2 py-1">
+                    <span key={`edit-${index}`} className='inline-flex h-8 items-center gap-1 rounded-full border border-line bg-white px-3'>
                       <input
                         autoFocus
                         value={editingValue}
@@ -424,21 +428,21 @@ export const ExcludedRolesCard: React.FC<Pick<Editor, 'profile' | 'setProfile'>>
                             cancelEdit();
                           }
                         }}
-                        aria-label="Modifier la règle"
-                        className="w-44 bg-transparent text-xs text-zinc-900 focus:outline-none"
+                        aria-label='Modifier la règle'
+                        className='w-44 bg-transparent text-caption text-ink focus:outline-none'
                       />
-                      <button type="button" onClick={() => saveEdit(index)} aria-label="Valider" className="text-emerald-700">
-                        <Check className="h-3.5 w-3.5" />
+                      <button type='button' onClick={() => saveEdit(index)} aria-label='Valider' className='text-emerald-700'>
+                        <Check className='size-4' />
                       </button>
-                      <button type="button" onClick={cancelEdit} aria-label="Annuler" className="text-zinc-500">
-                        <X className="h-3.5 w-3.5" />
+                      <button type='button' onClick={cancelEdit} aria-label='Annuler' className='text-muted'>
+                        <X className='size-4' />
                       </button>
                     </span>
                   ) : (
                     <Chip
                       key={`${role}-${index}`}
                       label={role}
-                      variant="danger"
+                      variant='danger'
                       onClick={() => {
                         setEditingIndex(index);
                         setEditingValue(role);
@@ -457,22 +461,22 @@ export const ExcludedRolesCard: React.FC<Pick<Editor, 'profile' | 'setProfile'>>
 };
 
 export const NegativeKeywordsCard: React.FC<Pick<Editor, 'profile' | 'setProfile'>> = ({ profile, setProfile }) => (
-  <CollapsibleBlock title="Mots interdits (titre et description)" count={(profile.negative_keywords || []).length} hint="avancé">
-    <div className="space-y-3">
-      <p className="text-xs text-zinc-500 leading-relaxed">
+  <CollapsibleBlock title='Mots interdits (titre et description)' count={(profile.negative_keywords || []).length} hint='avancé'>
+    <div className='space-y-4'>
+      <p className={CAPTION}>
         Contrairement aux règles ci-dessus, ces mots sont cherchés dans le titre ET dans la description de l’offre. À utiliser avec précaution.
       </p>
-      <TagInput label="Mots-clés exclus" tone="rose" values={profile.negative_keywords || []} onChange={(negative_keywords) => setProfile({ ...profile, negative_keywords })} />
+      <TagInput label='Mots-clés exclus' tone='rose' values={profile.negative_keywords || []} onChange={(negative_keywords) => setProfile({ ...profile, negative_keywords })} />
     </div>
   </CollapsibleBlock>
 );
 
 export const KeywordsCard: React.FC<Pick<Editor, 'profile' | 'setProfile'>> = ({ profile, setProfile }) => (
   <Card>
-    <CardHeader title="Mots-clés" icon={<Tag />} />
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <TagInput label="Mots-clés positifs" tone="emerald" values={profile.positive_keywords || []} onChange={(positive_keywords) => setProfile({ ...profile, positive_keywords })} />
-      <TagInput label="Mots-clés exclus" tone="rose" values={profile.negative_keywords || []} onChange={(negative_keywords) => setProfile({ ...profile, negative_keywords })} />
+    <CardHeader title='Mots-clés' icon={<Tag />} />
+    <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+      <TagInput label='Mots-clés positifs' tone='emerald' values={profile.positive_keywords || []} onChange={(positive_keywords) => setProfile({ ...profile, positive_keywords })} />
+      <TagInput label='Mots-clés exclus' tone='rose' values={profile.negative_keywords || []} onChange={(negative_keywords) => setProfile({ ...profile, negative_keywords })} />
     </div>
   </Card>
 );
@@ -492,29 +496,29 @@ export const PrivacyConsentCard: React.FC<Pick<Editor, 'profile' | 'setProfile'>
 
   return (
     <Card>
-      <CardHeader title="Autorisation et dépôt des données (RGPD / Suisse)" icon={<ShieldCheck className="w-5 h-5 text-emerald-600" />} />
-      <div className="space-y-4">
-        <label className="flex items-start gap-3 cursor-pointer p-4 bg-zinc-50 border border-zinc-200 rounded-lg hover:bg-zinc-100/60 transition-colors">
+      <CardHeader title='Autorisation et dépôt des données (RGPD / Suisse)' icon={<ShieldCheck className='size-4 text-emerald-600' />} />
+      <div className='space-y-4'>
+        <label className='flex cursor-pointer items-start gap-3 rounded-control border border-line bg-black/[0.02] p-4 transition-colors hover:bg-black/[0.04]'>
           <input
-            type="checkbox"
+            type='checkbox'
             checked={Boolean(profile.privacy_consent)}
             onChange={(e) => handleToggle(e.target.checked)}
-            className="w-5 h-5 mt-0.5 rounded accent-emerald-600"
+            className='mt-1 size-4 rounded accent-emerald-600'
           />
-          <div className="space-y-1">
-            <span className="text-sm font-bold text-zinc-900 block">
+          <div className='space-y-1'>
+            <span className='block text-body font-medium text-ink'>
               « Autoriser le dépôt de mes données et de mon CV aux employeurs via les formulaires de candidature »
             </span>
-            <p className="text-xs text-zinc-600 leading-relaxed">
+            <p className={CAPTION}>
               En cochant cette case, vous accordez l’autorisation explicite à l’agent d’automatisation JobPilot de cocher la déclaration de confidentialité et de téléverser votre CV et vos données personnelles sur les portails de recrutement externes (Prospective, Jobup, etc.).
             </p>
           </div>
         </label>
 
         {profile.privacy_consent && (
-          <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-xs text-emerald-900 space-y-1">
-            <div className="font-semibold flex items-center gap-1.5">
-              <Check className="w-4 h-4 text-emerald-600" />
+          <div className='space-y-1 rounded-control bg-emerald-50 p-4 text-caption text-emerald-900'>
+            <div className='flex items-center gap-2 font-medium'>
+              <Check className='size-4 text-emerald-600' />
               <span>Autorisation active</span>
             </div>
             {profile.privacy_consent_date && (
@@ -524,11 +528,11 @@ export const PrivacyConsentCard: React.FC<Pick<Editor, 'profile' | 'setProfile'>
         )}
 
         {profile.privacy_consent_log && profile.privacy_consent_log.length > 0 && (
-          <div className="space-y-1.5 pt-2 border-t border-zinc-100">
-            <span className="text-xs font-semibold text-zinc-700 block">Journal des autorisations</span>
-            <div className="bg-zinc-900 text-zinc-100 font-mono text-[11px] p-3 rounded-lg max-h-36 overflow-y-auto space-y-1">
+          <div className='space-y-2 border-t border-line pt-4'>
+            <span className='block text-caption font-medium text-ink/70'>Journal des autorisations</span>
+            <div className='max-h-36 space-y-1 overflow-y-auto rounded-control bg-ink p-4 font-mono text-caption text-white/90'>
               {profile.privacy_consent_log.map((log, idx) => (
-                <div key={`log-${idx}-${log}`} className="opacity-90">{log}</div>
+                <div key={`log-${idx}-${log}`} className='opacity-90'>{log}</div>
               ))}
             </div>
           </div>
