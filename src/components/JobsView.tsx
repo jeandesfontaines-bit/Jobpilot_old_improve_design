@@ -1177,7 +1177,7 @@ export const JobsView: React.FC<JobsViewProps> = ({
       {viewMode === 'deck' ? (
         <div className="flex-1 min-h-0 min-w-0 flex flex-col overflow-y-auto custom-scrollbar bg-[#eeece7] p-4 sm:p-6 lg:p-8">
           {/* Barre de contexte supérieure */}
-          <div className="w-full max-w-[28.5rem] mx-auto mb-4 sm:mb-6 flex flex-wrap items-center justify-between gap-2 text-xs text-[#a1a1a9] px-1 select-none">
+          <div className="w-full max-w-[28.5rem] mx-auto mb-4 sm:mb-6 flex items-center justify-between gap-2 text-xs text-[#a1a1a9] px-1 select-none flex-nowrap overflow-x-auto">
             {/* Gauche : 1 / 163 + flèches */}
             <div className="flex items-center gap-1.5 shrink-0">
               <span className="font-semibold text-[#111114]">
